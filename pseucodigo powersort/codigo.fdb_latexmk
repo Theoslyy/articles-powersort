@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1744330741.29221 "c:/Users/theoa/Desktop/Pesquisa/ordenação/artigos théo/pseucodigo powersort/codigo.tex" "codigo.pdf" "codigo" 1744330742.37108 0
-  "c:/Users/theoa/Desktop/Pesquisa/ordenação/artigos théo/pseucodigo powersort/codigo.tex" 1744330740 13518 a74f910aa4376b399d13a4aa331f22e6 ""
+["pdflatex"] 1744679019.82572 "c:/Users/theoa/Desktop/Pesquisa/ordenação/artigos théo/pseucodigo powersort/codigo.tex" "codigo.pdf" "codigo" 1744679020.89099 0
+  "c:/Users/theoa/Desktop/Pesquisa/ordenação/artigos théo/pseucodigo powersort/codigo.tex" 1744679018 14393 1d041dfc56a5c9318656970203206f33 ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1739537510 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1739539769 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/tcrm0500.tfm" 1739538783 1536 b3387106d9afecbfe14bde2de6eadf47 ""
@@ -49,6 +49,8 @@
   "c:/texlive/2024/texmf-dist/tex/latex/amsmath/amstext.sty" 1739535584 2444 71618ea5f2377e33b04fb97afdd0eac2 ""
   "c:/texlive/2024/texmf-dist/tex/latex/base/article.cls" 1739541639 20144 63d8bacaf52e5abf4db3bc322373e1d4 ""
   "c:/texlive/2024/texmf-dist/tex/latex/base/ifthen.sty" 1739541639 5525 9dced5929f36b19fa837947f5175b331 ""
+  "c:/texlive/2024/texmf-dist/tex/latex/base/omlcmr.fd" 1739541639 2470 cbfd89aa18d2d104ec0041c9de14e544 ""
+  "c:/texlive/2024/texmf-dist/tex/latex/base/omscmr.fd" 1739541639 2469 c75f72b1dc17277decdd842fa4a321a8 ""
   "c:/texlive/2024/texmf-dist/tex/latex/base/size10.clo" 1739541639 8448 5cf247d4bd0c7d5d711bbbdf111fae2e ""
   "c:/texlive/2024/texmf-dist/tex/latex/float/float.sty" 1739539677 6749 16d2656a1984957e674b149555f1ea1d ""
   "c:/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1739541570 29785 9f93ab201fe5dd053afcc6c1bcf7d266 ""
@@ -56,8 +58,8 @@
   "c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1739548507 5512124 2cf941ede77dae451992032562f7b65f ""
   "c:/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1739549013 3352822 b2f8ab2fe38dbd244539dab1721f2be2 ""
   "c:/texlive/2024/texmf.cnf" 1739548459 713 e69b156964470283e0530f5060668171 ""
-  "codigo.aux" 1744330742 1666 222e4b833c75d23cd7029b3125d71c68 "pdflatex"
-  "codigo.tex" 1744330740 13518 a74f910aa4376b399d13a4aa331f22e6 ""
+  "codigo.aux" 1744679020 1702 72f331c7044f13213f9386ada67bc287 "pdflatex"
+  "codigo.tex" 1744679018 14393 1d041dfc56a5c9318656970203206f33 ""
   (generated)
   "codigo.aux"
   "codigo.log"

@@ -33,22 +33,17 @@ Essa pergunta é meio boba. \newline
 cada elemento seguinte será: o fim da run e o power da run com a anterior. 
 run e não teremos um elemento sentinela. O inicio de uma run baseia-se no fim da anterior + 1. Assim que incluimos um elemento
 que estoura o tamanho da pilha, temos que esquecer o primeiro elemento e ajustar
-o novo primeiro elemento para também guardar o seu início, ou seja:
-\newline
-Pilha: \newline
-tamanho == 3
-run inicio == (inicio1) \newline
-1. run1 (fim1, power1) \newline
-2. run2 (fim2, power2) \newline
-3. run3 (fim3, power3) \newline
-lotou! \newline
-Inserir run4 (fim4, power4) \newline
-esquece run1. \newline
-run inicio <- fim1 + 1 \newline
-1 <- (fim4, power4) \newline
-(cada pop ou insert decrementa ou aumenta o tamanho)
+o novo primeiro elemento para também guardar o seu início.
+(cada pop ou insert decrementa ou aumenta o tamanho) 
 
-Para a direita, ACHO QUE NAO PRECISA mudar a estrutura
+\noindent Como vamos fazer scans da esquerda para a direita e da direita para a esquerda, precisamos 
+alternar entre somar um no fim de uma run para achar o começo da próxima e diminuir um. $\gets$ pensar nisso
+
+\noindent \textbf{Comentário do professor:} ``{Só um detalhe de notação, usa aqui (A, s$_2$, n). A[s$_2$] é o valor e não o índice.}''
+
+\noindent \textbf{Resposta:} Fiz desse jeito porque é a forma que eles escreveram no artigo, mas achei bem estranho também, depois vou mudar.
+
+
 
 \noindent \textbf{Introduction:} We are very smart and we know things, this is the complaints we have for things
 that weren't done by us and how we would have made them better. 
@@ -115,6 +110,7 @@ needed to sort the array is:
 \end{algorithmic}
 \end{algorithm}
 \newpage
+\noindent\textbf{After first modifications:}
 \subsection{\textbf{\textbf{Second variation of C-Bounded Powersort (goes left and right!)}}}
 \textbf{Commentary on our second version:} This works rather similarly to our first version.
 The main difference is the fact that, once we reach the end of the array, instead of restarting
@@ -122,74 +118,10 @@ our scan from the beginning, we scan, starting from the end, to the left, until 
 and, thus, we repeat the scan-right process.
 This is slightly better than the first version, given that it takes advantage of 
 runs still being in cache instead of restarting from the beginning.
-%para o código quebrar páginas, não podemos usar o algorithm, logo, fiz um template de header
-
-\noindent\rule{\linewidth}{0.8pt}\par % linha preta do topo para fazer um header
-\vspace{-0.3em} % espaçamento 
-\noindent\textbf{Algorithm 3} C-Bounded-Powersort 1(A[1...n], C):\label{alg:powermy2}
-
-\vspace{-0.6em} % espaçamento
-\noindent\rule{\linewidth}{0.5pt}\par % linha preta de baixo para fechar o header
-\vspace{-0.5em} % espaçamento
-\begin{algorithmic}[1]
-\State $X :=$ C-bounded stack of runs
-\State $P :=$ C-bounded stack of powers
-\State $Side := L$ Direction of the scan \Comment{Starts from left to right}
-\State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
-\While{$e_1 < n$}
-    \If{$Side == L$}
-        \While{$e_1 < n$}
-            \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$ 
-            \State $p := NodePower(s1, e1, s2, e2, n)$
-            \While {P.top() $>$ p}
-                \State P.pop()
-                \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-            \EndWhile \State X.push(A[s1, e1]); P.push(p)
-            \State $s_1 := s_2; e_1 := e_2$
-        \EndWhile
-        \State \textbf{end while} 
-        \While{¬X.empty()}
-            \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-        \EndWhile
-        \State $e_1 = ExtendRunLeft(A[n], 1)$ \Comment{{\scriptsize Now, we're scanning from right to left!}}
-        \If{$e_1 == 1$}
-            \State break \Comment{{\scriptsize If we could extend until the beginning, our run is the entire array.}}
-        \EndIf
-        \State $Side \gets R$ \Comment{Side of the next scan}
-    \ElsIf {$Side == R$}
-        \While{$e_1 > 1$} \Comment{We're scanning from n down to 1}
-            \State $s_2 := e_1 - 1; e_2 := ExtendRunLeft(A[s_2], 1)$ 
-            \State $p := NodePower(s1, e1, s2, e2, n)$
-            \While {P.top() $>$ p}
-                \State P.pop()
-                \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-            \EndWhile \State X.push(A[s1, e1]); P.push(p)
-            \State $s_1 := s_2; e_1 := e_2$
-        \EndWhile 
-        \State \textbf{end while}
-        \While{¬X.empty()}
-            \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-        \EndWhile
-        \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$ \Comment{{\small Now, we're scanning from left to right!}}
-        \If{$e_1 == n$}
-            \State break \Comment{{\scriptsize If we could extend until the end, our run is the entire array.}}
-        \EndIf
-        \State $Side \gets L$ \Comment{Side of the next scan}
-    \EndIf
-\EndWhile
-\end{algorithmic}
-\vspace{-1em}
-\noindent\rule{\linewidth}{0.5pt}\par 
-
-\newpage
-\noindent\textbf{TEMPORARY VERSION OF OUR SECOND VERSION TO APPLY CHANGES:}
-\subsection{\textbf{\textbf{Second variation of C-Bounded Powersort (goes left and right!)}}}
-\textbf{Commentary on our second version:} This works rather similarly to our first version.
-The main difference is the fact that, once we reach the end of the array, instead of restarting
-our scan from the beginning, we scan, starting from the end, to the left, until we reach the beginning of the array,
-and, thus, we repeat the scan-right process.
-This is slightly better than the first version, given that it takes advantage of 
-runs still being in cache instead of restarting from the beginning.
+\textbf{Comentário sobre X.size > 1:} Ao invés de termos uma stack X e P, teremos somente uma Stack guardando power e runs. 
+Assim, caso mantenhamos uma run dentro da stack após o final de um scan, ela não estará com o 'power' correto quando
+o próximo scan iniciar. Isso significa que teríamos que dar um pop nessa pilha e tratá-la como vazia. Podemos fazer um s1 $\gets$ top,
+visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai ser sempre a run resultante de todos os merges finais (será?)
 %para o código quebrar páginas, não podemos usar o algorithm, logo, fiz um template de header
 
 \noindent\rule{\linewidth}{0.8pt}\par % linha preta do topo para fazer um header
@@ -293,5 +225,65 @@ instead of:
 \end{algorithmic}
 \vspace{-1em}
 \noindent\rule{\linewidth}{0.5pt}\par
+\newpage
+\section{The data structure:}
+\textbf{Introduction:} Wild and Munro's paper shows no specific code for their stack data structure,
+this is probably due to the fact that they simply use a standard stack of height $\log n$.
+Thus, we will have no 'counterpart' algorithm to analyze. Our algorithm implements a modified version of a stack which
+we call "C-Bounded Stack"/"Forgetful Stack".
+
+\subsection{C-Bounded Stack:}
+\noindent\textbf{Commentary on our data structure:} We keep the beginning of the first run present in the array.
+This run will be the run that we will 'forget' once the array is full. Every time we forget a run, we will 
+update the beginning of the entire structure as the end of the run we are forgetting + 1 (This changes with directions, need to revise it). This is 
+due to the fact that runs are contiguous, so, the beginning of a run is exactly the ending of the previous run + 1.
+We only keep the beginning and end of the first run, alongside its power with the next 'found' run. (Given that
+we are going both directions, a.k.a scanning right and then left, each time we find a run, we calculate its power with the previously found run.
+In the algorithm, s1 is the previously found run, s2 is the newly found run, the power is calculated between both of those runs and then s1 gets into the stack alongside the power calculated.).
+Besides the information regarding the first run, we also keep the power and the end of every other run inserted in the stack. 
+Top and Add algorithsm are standard, I believe, although they're somewhat funky. We add an element directly on the top position (which is why to return the top element we need to do return top-1).
+Bottom keeps the first run inserted in the stack (the 'oldest'). RunIni keeps the beginning index of the run in bottom.
+MaxSize is the maximum capacity of the stack and size is the current amount of elements in the stack. Notice that we don't 'clean' our array
+as we pop elements, we just allow that position to be 'overwritten' through an add (this is probably standard practice too).
+The 'code space'/'code block' needs to be rewritten to look a little bit prettier. I'm going to separate each function in a specific block. The algorithm can be found in the next page.
+\newpage
+
+\noindent\rule{\linewidth}{0.8pt}\par
+\vspace{-0.3em} 
+\noindent\textbf{Algorithm 4} C-Bounded Stack(initial run $s_1$, size C):\label{alg:stack}
+
+\vspace{-0.6em} 
+\noindent\rule{\linewidth}{0.5pt}\par 
+\vspace{-0.5em} 
+\begin{algorithmic}[1]
+\State top := 1
+\State bottom := 1
+\State size := 0
+\State MaxSize := C
+\State RunIni := $s_1$ \Comment{We keep the index of the beginning of the first run}
+\State array[MaxSize]
+\State \textbf{func Pop()}\{
+\If{top == 1 and bottom \textgreater top:} \Comment{Is this second comparison necessary?}
+\State top $\gets$ MaxSize
+\Else
+\State top$--$ 
+\EndIf
+\State C$--$ \}
+\State \textbf{func Add(\textnormal{run e$_i$, power k})}\{
+\If{C == MaxSize:} \Comment{i think theres a smarter way to do this}
+\State s1 $\gets$ array[bottom].end+1 \Comment{We need to update which run is the first}
+\State bottom $\gets$ (bottom + 1)\%MaxHeight
+\State array[top] $\gets$ (e$_1$, k)
+\State top $\gets$ (top + 1)\%MaxHeight
+\Else
+\State array[top] $\gets$ (e$_1$, k)
+\State top $\gets$ (top + 1)\%MaxHeight
+\State C$++$ 
+\EndIf \}
+\State \textbf{func Top()}\{
+\State return array[(top == 1) ? MaxHeight : (top - 1)] \}
+\end{algorithmic}
+\vspace{-1em} 
+\noindent\rule{\linewidth}{0.5pt}\par 
 
 \end{document}
