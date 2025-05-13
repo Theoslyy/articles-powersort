@@ -1,0 +1,10 @@
+# Arquivos gerados pelo LaTeX
+*.aux
+*.bbl
+*.blg
+*.log
+*.synctex.gz
+*.spl
+*.fls
+*.fdb_latexmk
+
