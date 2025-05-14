@@ -281,23 +281,27 @@ visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai se
 \State $X :=$ C-bounded stack of runs and powers
 \State $s_1 := 1; e_1 = ExtendRunRight(1, n)$
 \While{$true$}
-    \If{$e_1 == n$}
-    \State break
-    \EndIf
     \While{$e_1 < n$} 
         \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(s_2, n)$ 
         \State $p := NodePower(s1, e1, s2, e2, n)$
         \While {X.size \textgreater \text{ }1 and X.top().power $>$ p}
-            \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
-            \State X.pop()
+            \State s0 $\gets$ X.pop().boundary
+            \State Merge(A, s0, s1, e1)
+            \State s1 $\gets$ s0
         \EndWhile \State X.push(s1, p);
         \State $s_1 := s_2; e_1 := e_2$
     \EndWhile
     \State \textbf{end while} 
     \While{$X.size > 1$}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
+        \State s0 $\gets$ X.pop().boundary
+        \State Merge(A, s0, s1, e1)
+        \State s1 $\gets$ s0
     \EndWhile
-    \State $s_1 := n; e_1 = ExtendRunLeft(A[n], 1)$ \Comment{{\scriptsize Now, we're scanning from right to left!}}
+    \State s1 $\gets$ X.pop().boundary
+    \State swap(s1, e1) \Comment{Simplification for s1 gets e1 and e1 gets s1. This signals the start of the scan left.}
+    \State \Comment{After merging everything that was on the stack, we will be left with a
+    run at the end of the array. We will use this run as our first run in our scan left. This
+    saves on doing an initial scan left to 'switch sides' and find the first run.}
     \If{$e_1 == 1$}
         \State break \Comment{{\scriptsize If we could extend until the beginning, our run is the entire array.}}
     \EndIf
@@ -305,16 +309,23 @@ visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai se
         \State $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$ 
         \State $p := NodePower(s1, e1, s2, e2, n)$
         \While {X.size \textgreater \text{ }1 and X.top() $>$ p}
-            \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
-            \State X.pop()
+            \State s0 $\gets$ X.pop().boundary
+            \State Merge(A, s0, s1, e1)
+            \State s1 $\gets$ s0
         \EndWhile \State X.push(s1, p); 
         \State $s_1 := s_2; e_1 := e_2$
     \EndWhile 
     \State \textbf{end while}
     \While{$X.size > 1$}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
+        \State s0 $\gets$ X.pop().boundary
+        \State Merge(A, s0, s1, e1)
+        \State s1 $\gets$ s0 
     \EndWhile
-    \State $s_1 := 1; e_1 = ExtendRunRight(1, n)$ \Comment{{\small Now, we're scanning from left to right!}}
+    \State s1 $\gets$ X.pop().boundary
+    \State swap(s1, e1) \Comment{Switching to the scan right. The equivalent of what we did before scanning left.}
+    \If{$e_1 == n$}
+    \State break
+    \EndIf
 \EndWhile
 \end{algorithmic}
 \vspace{-1em}
