@@ -354,7 +354,9 @@ visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai se
 
 \subsubsection{Our Nodepower:}
 \textbf{Commentary on our Node Power:} Ours is cool and epic.
-(TO-DO: explanation of why it works)
+It could also be reduced to a single line:
+return (\_{\_{}}builtin\_{}clz(s$_1$\^{}s$_2$))
+(TO-DO: explanation of why it works) 
 
 \noindent\rule{\linewidth}{0.8pt}\par 
 \vspace{-0.3em} 
@@ -365,8 +367,7 @@ visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai se
 \vspace{-0.5em} 
 \begin{algorithmic}[1]
 \State xor $:= s_1$ \textbf{\^{}} $s_2$
-\State first\_{}bit := \_{\_{}}builtin\_{}clz(xor)
-\State $\ell :=$ first\_{}b
+\State $\ell$ := \_{\_{}}builtin\_{}clz(xor)
 \State \textbf{return ($\ell$)}
 \end{algorithmic}
 \vspace{-1em}
