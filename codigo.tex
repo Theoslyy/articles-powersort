@@ -413,8 +413,10 @@ When the algorithm is scanning left, the boundary it keeps is the end of the run
 \If{size \textgreater \text{ } 1:}
     \If{top == 1:}
     \State top $\gets$ MaxSize
+    \State return array[top]
     \Else
     \State top$--$ 
+    \State return array[top]
     \EndIf
     \State C$--$ \}
 \EndIf
