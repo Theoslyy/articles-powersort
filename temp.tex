@@ -7,33 +7,34 @@
 \usepackage{amsthm}
 \usepackage{fourier}
 % Algorithms:
-\usepackage{algorithm2e}
+\usepackage[algo2e,boxruled, linesnumbered]{algorithm2e}
 \SetKwComment{Comment}{//}{}
-\RestyleAlgo{ruled}
+\SetNlSty{}{}{:}
+
 
 
 \begin{document}
 
-\begin{algorithm}
+\begin{algorithm2e}[H]
 \caption{Powersort(A[1...n])}\label{ps1}
-$X := $ stack of runs \Comment*[r]{{capacity$\lfloor{lgn(n)}\rfloor + 1$}}
-$P :=$ stack of powers \Comment*[r]{capacity $\lfloor{lgn(n)}\rfloor + 1$}
+$X := $ stack of runs\Comment*[r]{{capacity$\lfloor{lgn(n)}\rfloor + 1$}}
+$P :=$ stack of powers\Comment*[r]{capacity $\lfloor{lgn(n)}\rfloor + 1$}
 $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$\;
 \While{$e_1 < n$}{
      $s_2 := e_1 + 1;$ $e_2 := ExtendRunRight(A[s_2], n)$ \Comment*[r]{A[$s_2..e_2$] next run}
-     $p := NodePower(s1, e1, s2, e2, n)$ \Comment*[r]{{\small $P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}}
-     \While {P.top() $>$ p}{ \Comment*[r]{previous merge deeper in tree than current}
-         P.pop() \Comment*[r]{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
-         ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]);
+     $p := NodePower(s1, e1, s2, e2, n)$\Comment*[r]{{\small $P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}}
+     \While {P.top() $>$ p}{
+        \nlset{}\Comment{previous merge deeper in tree than current}
+        P.pop()\Comment*[r]{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
+        ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]);
      }
      X.push(A[s1, e1])\; 
      P.push(p)\;
-     $s_1 := s_2; e_1 := e_2$
- \Comment*[r]{Now A[$s_1..s_1$] is the rightmost run}}
+     $s_1 := s_2; e_1 := e_2$\Comment*{Now A[$s_1..s_1$] is the rightmost run}}
  \While{¬X.empty()}{
      ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]);
  }
-\end{algorithm}
+\end{algorithm2e}
 
 \end{document}
 % \newpage
