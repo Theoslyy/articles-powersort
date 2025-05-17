@@ -6,9 +6,12 @@
 \usepackage{indentfirst}
 \usepackage{amsthm}
 \usepackage{fourier}
-% For algorithms:
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
+% Algorithms:
+\usepackage[algo2e,boxruled, linesnumbered]{algorithm2e}
+\SetKwComment{Comment}{//}{}
+\SetKwProg{Def}{func}{:}{}
+
+\SetNlSty{}{}{:}
 % TO-DO: Pacote para desenhar os grafos! Ver o email que o professor fisch mandou sobre
 
 % Customizations:
@@ -196,28 +199,28 @@ that weren't done by us and how we would have made them better.
 \subsection{Powersort Versions:}
 \subsubsection{\textbf{Standard Powersort}}
 \textbf{Commentary on Wild and Munro's version:} 
-A single pass algorithm that sorts the entire array. 
-\begin{algorithm}
-\caption{Powersort(A[1...n]) by Wild and Munro:}
-\begin{algorithmic}[1]
-\State $X :=$ stack of runs \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
-\State $P :=$ stack of powers \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
-\State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
-\While{$e_1 < n$}
-    \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$ \Comment{A[$s_2..e_2$] next run}
-    \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{$P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}
-    \While {P.top() $>$ p} \Comment{previous merge deeper in tree than current}
-        \State P.pop() \Comment{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-    \EndWhile \State X.push(A[s1, e1]); P.push(p)
-    \State $s_1 := s_2; e_1 := e_2$
-\EndWhile 
-\State \textbf{end while} \Comment{Now A[$s_1..s_1$] is the rightmost run}
-\While{¬X.empty()}
-    \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-\EndWhile 
-\end{algorithmic}
-\end{algorithm}
+A single pass algorithm that sorts the entire array.
+\newline
+\begin{algorithm2e}[H]
+\caption{Powersort(A[1...n])}\label{ps1}
+$X := $ stack of runs\Comment*[r]{{capacity$\lfloor{lgn(n)}\rfloor + 1$}}
+$P :=$ stack of powers\Comment*[r]{capacity $\lfloor{lgn(n)}\rfloor + 1$}
+$s_1 \gets 1; e_1 \gets ExtendRunRight(A[1], n)$\;
+\While{$e_1 < n$}{
+     $s_2 \gets e_1 + 1;$ $e_2 \gets ExtendRunRight(A[s_2], n)$ \Comment*[r]{A[$s_2..e_2$] next run}
+     $p \gets NodePower(s_1, e_1, s_2, e_2, n)$\Comment*[r]{{\small $P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}}
+     \While {P.top() $>$ p}{
+        \nlset{}\Comment{previous merge deeper in tree than current}
+        P.pop()\Comment*[r]{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
+        ($s_1, e_1$) $\gets$ Merge(X.pop(), A[$s_1..e_1$]);
+     }
+     X.push(A[$s_1$, $e_1$])\; 
+     P.push(p)\;
+     $s_1 \gets s_2; e_1 \gets e_2$\Comment*{Now A[$s_1...e_1$] is the rightmost run}}
+ \While{¬X.empty()}{
+     ($s_1, e_1$) $\gets$ Merge(X.pop(), A[$s_1..e_1$]);
+ }
+\end{algorithm2e}
 \newpage
 \subsubsection{\textbf{\textbf{First variation of C-Bounded Powersort (only goes right)}}}
 \textbf{Commentary on our first version:} 
@@ -228,156 +231,148 @@ needed to sort the array is:
 \begin{equation}
     \text{N° of scans} \leq {\frac{\log{n}}{{C-1}}}
 \end{equation}
-\begin{algorithm}
-\caption{C-Bounded-Powersort 1(A[1...n], C):}\label{alg:powermy1}
-\begin{algorithmic}[1]
-\State $X :=$ C-bounded stack of runs \Comment{capacity C}
-\State $P :=$ C-bounded stack of powers \Comment{capacity C}
-\State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
-\While{$e_1 < n$} \Comment{{\small This while can be tweaked to use max amount of passes}}
-    \While{$e_1 < n$} \Comment{A single pass goes until the end of the array}
-        \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$
-        \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{{\small Using our node power algorithm}}
-        \While {P.top() $>$ p} \Comment{We follow the same merge policy}
-            \State P.pop()
-            \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-        \EndWhile \State X.push(A[s1, e1]); P.push(p)
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile 
-    \State \textbf{end while}
-    \While{¬X.empty()}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-    \EndWhile 
-    \State \Comment{{\small We're using a limited stack, so we need to check for another pass}}
-    \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$ \Comment{{\small If $e_1$ = end, the array is sorted}}
-\EndWhile 
-\State \textbf{end while}
-\end{algorithmic}
-\end{algorithm}
+\begin{algorithm2e}[H]
+\caption{First\_{}C-Bounded\_{}Powersort(A[1...n])}\label{ps2}
+$X :=$ C-bounded stack of runs\Comment*[r]{capacity C}
+$P :=$ C-bounded stack of powers\Comment*[r]{capacity C}
+$s_1 \gets 1; e_1 \gets ExtendRunRight(A[1], n)$\;
+ \While{$e_1 < n$}{ 
+    \nlset{}\Comment{{\small The while above can be tweaked to use max amount of passes}}
+    \While{$e_1 < n$}{ 
+            \nlset{}\Comment{We do a pass covering the entire array}
+            $s_2 \gets e_1 + 1; e_2 \gets ExtendRunRight(A[s_2], n)$ \;
+            $p \gets NodePower(s_1, s_2)$\Comment*[r]{{\small Using our node power algorithm}}
+            \While {P.top() $>$ p}{ 
+                \nlset{}\Comment{{\small We follow the same merge policy as Munro and Wilde}}
+                P.pop() \;
+                ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])\;
+            }
+         X.push(A[$s_1$, $e_1$]); P.push(p)\;
+         $s_1 \gets s_2; e_1 \gets e_2$\;
+     } 
+     \While{¬X.empty()}{
+         ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])\;
+     } 
+     \nlset{}\Comment{{\small We're using a limited stack, so we need to check for another pass}}
+     $s_1 \gets 1; e_1 \gets ExtendRunRight(A[1], n)$\Comment*[r]{{\small If $e_1$ = end, the array is sorted}}
+ } 
+\end{algorithm2e}
 \newpage
-\noindent\textbf{After first modifications:}
 \subsubsection{\textbf{\textbf{Second variation of C-Bounded Powersort (goes left and right!)}}}
-\textbf{Commentary on our second version:} This works rather similarly to our first version.
-The main difference is the fact that, once we reach the end of the array, instead of restarting
+\textbf{Commentary on our second version:} This works rather similarly to our first \linebreak 
+version. The main difference is the fact that, once we reach the end of the array, instead of restarting
 our scan from the beginning, we scan, starting from the end, to the left, until we reach the beginning of the array,
 and, thus, we repeat the scan-right process.
 This is slightly better than the first version, given that it takes advantage of 
-runs still being in cache instead of restarting from the beginning.
+runs still being in cache instead of restarting from the beginning. 
 
-\noindent\textbf{Comentário sobre X.size \textgreater 1:} Ao invés de termos uma stack X e P, teremos somente uma Stack guardando power e runs. 
-Assim, caso mantenhamos uma run dentro da stack após o final de um scan, ela não estará com o 'power' correto quando
-o próximo scan iniciar. Isso significa que teríamos que dar um pop nessa pilha e tratá-la como vazia. Podemos fazer um s1 $\gets$ top,
-visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai ser sempre a run resultante de todos os merges finais (será?)
-%para o código quebrar páginas, não podemos usar o algorithm, logo, fiz um template de header
+The code for the entire algorithm is too big to fit in a single page, therefore, we have subdivided it in three parts,
+as shown below.
 
-\noindent\rule{\linewidth}{0.8pt}\par % linha preta do topo para fazer um header
-\vspace{-0.3em} % espaçamento 
-\noindent\textbf{Algorithm 3} C-Bounded-Powersort 1(A[1...n], C):\label{alg:powermy2temp}
-
-\vspace{-0.6em} % espaçamento
-\noindent\rule{\linewidth}{0.5pt}\par % linha preta de baixo para fechar o header
-\vspace{-0.5em} % espaçamento
-\begin{algorithmic}[1]
-\State $X :=$ C-bounded stack of runs and powers
-\State $s_1 := 1; e_1 = ExtendRunRight(1, n)$
-\While{$true$}
-    \While{$e_1 < n$} 
-        \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(s_2, n)$ 
-        \State $p := NodePower(s1, e1, s2, e2, n)$
-        \While {X.size \textgreater \text{ }1 and X.top().power $>$ p}
-            \State s0 $\gets$ X.pop().boundary
-            \State Merge(A, s0, s1, e1)
-            \State s1 $\gets$ s0
-        \EndWhile \State X.push(s1, p);
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile
-    \State \textbf{end while} 
-    \While{$X.size > 1$}
-        \State s0 $\gets$ X.pop().boundary
-        \State Merge(A, s0, s1, e1)
-        \State s1 $\gets$ s0
-    \EndWhile
-    \State s1 $\gets$ X.pop().boundary
-    \State swap(s1, e1) \Comment{Simplification for s1 gets e1 and e1 gets s1. This signals the start of the scan left.}
-    \State \Comment{After merging everything that was on the stack, we will be left with a
-    run at the end of the array. We will use this run as our first run in our scan left. This
-    saves on doing an initial scan left to 'switch sides' and find the first run.}
-    \If{$e_1 == 1$}
-        \State break \Comment{{\scriptsize If we could extend until the beginning, our run is the entire array.}}
-    \EndIf
-    \While{$e_1 > 1$} \Comment{We're scanning from n down to 1}
-        \State $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$ 
-        \State $p := NodePower(s1, e1, s2, e2, n)$
-        \While {X.size \textgreater \text{ }1 and X.top() $>$ p}
-            \State s0 $\gets$ X.pop().boundary
-            \State Merge(A, s0, s1, e1)
-            \State s1 $\gets$ s0
-        \EndWhile \State X.push(s1, p); 
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile 
-    \State \textbf{end while}
-    \While{$X.size > 1$}
-        \State s0 $\gets$ X.pop().boundary
-        \State Merge(A, s0, s1, e1)
-        \State s1 $\gets$ s0 
-    \EndWhile
-    \State s1 $\gets$ X.pop().boundary
-    \State swap(s1, e1) \Comment{Switching to the scan right. The equivalent of what we did before scanning left.}
-    \If{$e_1 == n$}
-    \State break
-    \EndIf
-\EndWhile
-\end{algorithmic}
-\vspace{-1em}
-\noindent\rule{\linewidth}{0.5pt}\par 
+\begin{algorithm2e}[H]
+\caption{C-Bounded\_{}Powersort(A[1...n]) - A}\label{ps3a}
+$X :=$ C-bounded stack of runs and powers\;
+$s_0 :=$ This is a temp variable for the merges\;
+$s_1 \gets 1; e_1 \gets ExtendRunRight(1, n)$\;
+\While{$true$}{
+    \textit{\textbf{C-Bounded\_{}Powersort(A[1...n]) - B}}\;
+    \textit{\textbf{C-Bounded\_{}Powersort(A[1...n]) - C}}\;
+    \nlset{}\Comment{A break in any of the calls breaks from the while true, of course...}
+    \nlset{}\Comment{The division of the algorithm in parts is just for better readability in this papper.}
+}
+\end{algorithm2e}
+\begin{algorithm2e}[H]
+\caption{C-Bounded\_{}Powersort(A[1...n]) - B}\label{ps3b}
+     \While{$e_1 < n$}{ 
+        $s_2 \gets e_1 + 1; e_2 \gets ExtendRunRight(s_2, n)$\;
+        \nlset{}\Comment{{\small We do not need variable $s_2$, but it helps with clarity.}}
+        $p \gets NodePower(s_1, s_2)$\Comment*{$s_2$ is just $e_1 + 1$}
+        \While {X.size \textgreater \text{ }1 and X.top().power $>$ p}{
+            $s_0 \gets$ X.pop().boundary\;
+            Merge(A, $s_0$, $s_1$, $e_1$)\;
+            $s_1 \gets s_0$\;
+        } 
+        X.push($s_1$, p)\;
+        $s_1 \gets s_2; e_1 \gets e_2$\;
+    }
+    \While{$X.size > 1$}{
+        $s_0 \gets$ X.pop().boundary\;
+        Merge(A, $s_0$, $s_1$, $e_1$)\;
+        $s_1 \gets s_0$\;     
+    }
+    $s_1 \gets$ X.pop().boundary\;
+    $s_0 \gets s_1; s_1 \gets e_1; e_1 \gets s_0$\;
+    \nlset{}\Comment{The code above is a swap that signals the start of the left pass.}
+    \nlset{}\Comment{The merge of all runs left in the stack results in a single
+    run at the end of the array. We use this run as the first run in the left pass. This
+    saves on doing a call for scanleft to 'switch sides'.}   
+    \nlset{}\Comment{{Now, we're doing a pass from the right to the left!}}
+    \If{$e_1 == 1$}{
+        break\;
+        \nlset{}\Comment{{If the run resulting from the merges reaches the beginning of the array, it is the entire array.}}
+    }
+\end{algorithm2e}
+\begin{algorithm2e}
+\caption{C-Bounded\_{}Powersort(A[1...n]) - C}\label{ps3c}
+    \While{$e_1 > 1$}{ 
+        \nlset{}\Comment{We're scanning from n down to 1!}
+        $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$\;
+        $p := NodePower(s_1, s_2)$\;
+        \While {X.size \textgreater \text{ }1 and X.top() $>$ p}{
+            $s_0 \gets$ X.pop().boundary\;
+            Merge(A, $s_0$, $s_1$, $e_1$)\;
+            $s_1 \gets s_0$\;
+        }
+        X.push($s_1$, p)\; 
+        $s_1 \gets s_2; e_1 \gets e_2$\;
+    } 
+    \While{$X.size > 1$}{
+        $s_0 \gets$ X.pop().boundary\;
+        Merge(A, $s_0$, $s_1$, $e_1$)\;
+        $s_1 \gets s_0$\;
+    }
+    $s_1 \gets$ X.pop().boundary\;
+    $s_0 \gets s_1; s_1 \gets e_1; e_1 \gets s_0$\;
+    \nlset{}\Comment{Swapping for to the scan right. The equivalent of what we did before scanning left.}   
+    \If{$e_1 == n$}{
+       break\;
+    }
+    Cycles back to C-Bounded\_{}Powersort(A[1...n]) - A\;
+\end{algorithm2e}
+\newpage
 
 \subsection{NodePower versions:}
 \subsubsection{Standard Nodepower:}
 \textbf{Commentary on Wild and Munro's Node Power:} This is so silly and expensive! 
-
-\noindent\rule{\linewidth}{0.8pt}\par
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 4} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower1}
-
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State $n_1 := e_1 - s_1 + 1;$ \text{ } $n_2 := e_2 - s_2 + 1;$ \text{ } $\ell := 0$
-\State $a := (s_1 + n_1/2 - 1)/n;$ \text{ } $b := (s_2 + n_2/2 - 1)/n$
-\While{$\lfloor a \cdot 2^\ell \rfloor == \lfloor b \cdot 2^\ell \rfloor$ \textbf{do} $\ell := \ell + 1$ \textbf{end while}}
-\EndWhile   
-\State \textbf{return ($\ell$)}
-\end{algorithmic}
-\vspace{-1em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-
+\begin{algorithm2e}
+\caption{Nodepower($s_1, e_1, s_2, e_2, n$)}\label{np1}
+$n_1 := e_1 - s_1 + 1;$ \text{ } $n_2 := e_2 - s_2 + 1;$ \text{ } $\ell := 0$\;
+$a := (s_1 + n_1/2 - 1)/n;$ \text{ } $b := (s_2 + n_2/2 - 1)/n$\;
+\lWhile{$\lfloor a \cdot 2^\ell \rfloor == \lfloor b \cdot 2^\ell \rfloor$}{$\ell := \ell + 1$
+}
+\textbf{return ($\ell$)}
+\end{algorithm2e}
+\newpage
 \subsubsection{Our Nodepower:}
 \textbf{Commentary on our Node Power:} Ours is cool and epic.
 It could also be reduced to a single line:
 return (\_{\_{}}builtin\_{}clz(s$_1$\^{}s$_2$))
 (TO-DO: explanation of why it works) 
-
-\noindent\rule{\linewidth}{0.8pt}\par 
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 5} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower2}
-
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State xor $:= s_1$ \textbf{\^{}} $s_2$
-\State $\ell$ := \_{\_{}}builtin\_{}clz(xor)
-\State \textbf{return ($\ell$)}
-\end{algorithmic}
-\vspace{-1em}
-\noindent\rule{\linewidth}{0.5pt}\par
+\begin{algorithm2e}
+\caption{Our\_{}Nodepower($s_1, s_2$)}\label{np2}
+xor $\gets s_1$ \textbf{\^{}} $s_2$\;
+$\ell \gets$ \_{\_{}}builtin\_{}clz(xor)\;
+\textbf{return ($\ell$)}\;
+\end{algorithm2e}
 \newpage
 \subsection{The data structure:}
 \textbf{Introduction:} Wild and Munro's paper shows no specific code for their stack data structure,
 this is probably due to the fact that they simply use a standard stack of height $\log n$.
 Thus, we will have no 'counterpart' algorithm to analyze. Our algorithm implements a modified version of a stack which
-we call "C-Bounded Stack"/"Forgetful Stack".
+we call:
+\begin{equation*}
+    \text{C-Bounded Stack"/"Forgetful Stack.}
+\end{equation*}
 
 \subsubsection{C-Bounded Stack:}
 \noindent\textbf{Commentary on our data structure:} 
@@ -397,45 +392,37 @@ of a run boundary and the power of this run with its predecessor.
 
 \noindent\textbf{Run boundaries:} When the algorithm is scanning right, the boundary it keeps is the start of the run found. 
 When the algorithm is scanning left, the boundary it keeps is the end of the run found.
-
-\noindent\rule{\linewidth}{0.8pt}\par
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 6} C-Bounded Stack(initial run $s_1$, size C):\label{alg:stack}
-
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State top := 1
-\State size := 0
-\State MaxSize := C
-\State array[MaxSize]
-\State \textbf{func Pop()}\{
-\If{size \textgreater \text{ } 1:}
-    \If{top == 1:}
-    \State top $\gets$ MaxSize
-    \State return array[top]
-    \Else
-    \State top$--$ 
-    \State return array[top]
-    \EndIf
-    \State C$--$ \}
-\EndIf
-\State \textbf{func Push(\textnormal{run boundary$_i$, power k})}\{
-\State array[top] $\gets$ (boundary$_1$, k)
-\State top $\gets$ top\%MaxHeight + 1
-\If (C $\neq$ MaxHeight:)
-\State C$++$ 
-\EndIf \}
-\State \textbf{func Top()}\{
-\If {C $\geq$ 1:}
-\State return array[(top == 1) ? MaxHeight : (top - 1)] \}
-\Else 
-\State return null
-\EndIf
-\end{algorithmic}
-\vspace{-1em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-
+\begin{algorithm2e}
+\caption{C-Bounded Stack(C)}\label{cstack}
+top $\gets$ 1; size $\gets$ 0\Comment*{Starting values for the stack}
+MaxSize $\gets$ C\Comment*{Max stack size in number of elements}
+array[MaxSize]\Comment*{The array will store tuples of (index,power)}
+\Def{pop()}{
+    \If{size \textgreater \text{ } 1:}{
+        \If{top == 1:}{
+            top $\gets$ MaxSize;
+            size$--$\;
+            return array[top]\;}
+        \Else{
+            top$--$;
+            size$--$\;
+            return array[top]\;
+        }}}
+\Def{push(boundary$_i$, k)}{ 
+    \nlset{}\Comment{boundary$_i$ is the index of the start of the i-th run}
+    \nlset{}\Comment{k is the power of the i-th run with the (i+1)-th run.}
+    array[top] $\gets$ (boundary$_1$, k)\;
+    top $\gets$ top\%MaxSize + 1\;
+    \If {(size $\neq$ MaxSize)}{
+    size$++$ 
+ }}
+\Def{func Top()}{
+    \If {size $\geq$ 1:}{
+        return array[(top == 1) ? MaxSize : (top - 1)]}
+    \Else{
+        return null\Comment*{This will never happen. Top is only called in the algorithm if size > 1.}
+    }
+}
+\end{algorithm2e}
 
 \end{document}
