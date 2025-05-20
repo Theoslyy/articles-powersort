@@ -12,7 +12,9 @@
 \SetKwProg{Def}{func}{:}{}
 
 \SetNlSty{}{}{:}
-% TO-DO: Pacote para desenhar os grafos! Ver o email que o professor fisch mandou sobre
+% Graphs:
+\usepackage{tikz}
+\usetikzlibrary{graphs} 
 
 % Customizations:
 \title{\textbf{C-Bounded Powersort's time complexity and correctness analysis}}
@@ -84,6 +86,26 @@ enough to process all subtrees of T with height of C-1.
 \textit{Proof by induction:}  
 
 \textbf{Base case - T of height 2:}
+
+\begin{center}
+\begin{tikzpicture} [
+    level 1/.style={sibling distance=4cm},
+    level 2/.style={sibling distance=2cm, 
+    every node/.style={draw,rectangle, 
+    minimum width=0.60cm, minimum height=0.90cm,
+    align=center}},
+    every node/.style={draw, circle, minimum size=1cm, inner sep=0pt}]
+  \node {$v$}
+    child { node {$v_1$}
+      child { node {$R_1$} }
+      child { node {$R_2$} }
+    }
+    child { node {$v_2$}
+      child { node {$R_3$} }
+      child { node {$R_4$} }
+    };
+\end{tikzpicture}
+\end{center}
 
 Let v be the root of T and v$_1$ and v$_2$ its two children. Therefore, T has two sub-trees, T’ and T’’, both of of height one. 
 For the left subtree T', v$_1$ is the root and it has only two leaf children: the runs R$_1$ and R$_2$. 
