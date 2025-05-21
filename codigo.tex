@@ -7,7 +7,7 @@
 \usepackage{amsthm}
 \usepackage{fourier}
 % Algorithms:
-\usepackage[algo2e,boxruled, linesnumbered]{algorithm2e}
+\usepackage[algo2e,boxruled, linesnumbered, noend]{algorithm2e}
 \SetKwComment{Comment}{//}{}
 \SetKwProg{Def}{func}{:}{}
 
@@ -297,15 +297,7 @@ $X :=$ C-bounded stack of runs and powers\;
 $s_0 :=$ This is a temp variable for the merges\;
 $s_1 \gets 1; e_1 \gets ExtendRunRight(1, n)$\;
 \While{$true$}{
-    \textit{\textbf{C-Bounded\_{}Powersort(A[1...n]) - B}}\;
-    \textit{\textbf{C-Bounded\_{}Powersort(A[1...n]) - C}}\;
-    \nlset{}\Comment{A break in any of the calls breaks from the while true, of course...}
-    \nlset{}\Comment{The division of the algorithm in parts is just for better readability in this papper.}
-}
-\end{algorithm2e}
-\begin{algorithm2e}[H]
-\caption{C-Bounded\_{}Powersort(A[1...n]) - B}\label{ps3b}
-     \While{$e_1 < n$}{ 
+    \While{$e_1 < n$}{ 
         $s_2 \gets e_1 + 1; e_2 \gets ExtendRunRight(s_2, n)$\;
         \nlset{}\Comment{{\small We do not need variable $s_2$, but it helps with clarity.}}
         $p \gets NodePower(s_1, s_2)$\Comment*{$s_2$ is just $e_1 + 1$}
@@ -324,18 +316,13 @@ $s_1 \gets 1; e_1 \gets ExtendRunRight(1, n)$\;
     }
     $s_1 \gets$ X.pop().boundary\;
     $s_0 \gets s_1; s_1 \gets e_1; e_1 \gets s_0$\;
-    \nlset{}\Comment{The code above is a swap that signals the start of the left pass.}
     \nlset{}\Comment{The merge of all runs left in the stack results in a single
     run at the end of the array. We use this run as the first run in the left pass. This
     saves on doing a call for scanleft to 'switch sides'.}   
-    \nlset{}\Comment{{Now, we're doing a pass from the right to the left!}}
     \If{$e_1 == 1$}{
         break\;
         \nlset{}\Comment{{If the run resulting from the merges reaches the beginning of the array, it is the entire array.}}
     }
-\end{algorithm2e}
-\begin{algorithm2e}
-\caption{C-Bounded\_{}Powersort(A[1...n]) - C}\label{ps3c}
     \While{$e_1 > 1$}{ 
         \nlset{}\Comment{We're scanning from n down to 1!}
         $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$\;
@@ -359,8 +346,9 @@ $s_1 \gets 1; e_1 \gets ExtendRunRight(1, n)$\;
     \If{$e_1 == n$}{
        break\;
     }
-    Cycles back to C-Bounded\_{}Powersort(A[1...n]) - A\;
+}
 \end{algorithm2e}
+
 \newpage
 
 \subsection{NodePower versions:}
