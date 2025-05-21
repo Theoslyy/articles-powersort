@@ -193,28 +193,10 @@ Scans \leq \bigO(n \cdot \log{n})
 \section{Pseudocodes:}
 \noindent\textbf{TO-DOs:} \newline
 \noindent 1. Os comentários para cada algoritmo precisam estar de acordo com as definições usadas
-no primeiro esboço do artigo (powersort.tex) e precisam ser revisados para fazerem
+no começo do artigo e precisam ser revisados para fazerem
 sentido, alguns ainda estão bem abstratos e/ou não descrevem corretamente os algoritmos. \newline
-\noindent 2. Tanto para esse pdf quanto para o anterior, ou seja, para o artigo como um todo, o nome do professor Victor se enquadra como autor? Imagino que sim.
-Essa pergunta é meio boba. \newline
-\noindent 3. Código para a estrutura de dados que iremos usar. \newline
-\noindent 4. Reestruturar o vai e volta. \newline
-\noindent\textbf{Planejamento da estrutura:} Guardaremos o início da primeira run, seu fim e seu power com a run anterior (se houver), além disso,
-cada elemento seguinte será: o fim da run e o power da run com a anterior. 
-run e não teremos um elemento sentinela. O inicio de uma run baseia-se no fim da anterior + 1. Assim que incluimos um elemento
-que estoura o tamanho da pilha, temos que esquecer o primeiro elemento e ajustar
-o novo primeiro elemento para também guardar o seu início.
-(cada pop ou insert decrementa ou aumenta o tamanho) 
-
-\noindent Como vamos fazer scans da esquerda para a direita e da direita para a esquerda, precisamos 
-alternar entre somar um no fim de uma run para achar o começo da próxima e diminuir um. $\gets$ pensar nisso
-
-\noindent \textbf{Comentário do professor:} ``{Só um detalhe de notação, usa aqui (A, s$_2$, n). A[s$_2$] é o valor e não o índice.}''
-
-\noindent \textbf{Resposta:} Fiz desse jeito porque é a forma que eles escreveram no artigo, mas achei bem estranho também, depois vou mudar.
-
-
-
+\noindent 2. Formatação geral dos algoritmos para que eles fiquem bem posicionados nas páginas, além de
+deixar eles mais 'bonitos', não sei qual o formato de apresentação que o professor prefere. \newline 
 \noindent \textbf{Introduction:} We are very smart and we know things, this is the complaints we have for things
 that weren't done by us and how we would have made them better. 
 \newpage
