@@ -7,9 +7,10 @@
 \usepackage{amsthm}
 \usepackage{fourier}
 % Algorithms:
-\usepackage[algo2e,boxruled, linesnumbered]{algorithm2e}
+\usepackage[algo2e,ruled, noend, linesnumbered]{algorithm2e}
 \SetKwComment{Comment}{//}{}
 \SetKwProg{Def}{func}{:}{}
+\DontPrintSemicolon
 
 \SetNlSty{}{}{:}
 % Graphs:
@@ -398,34 +399,43 @@ of a run boundary and the power of this run with its predecessor.
 When the algorithm is scanning left, the boundary it keeps is the end of the run found.
 \begin{algorithm2e}
 \caption{C-Bounded Stack(C)}\label{cstack}
-top $\gets$ 1; size $\gets$ 0\Comment*{Starting values for the stack}
-MaxSize $\gets$ C\Comment*{Max stack size in number of elements}
+% \SetKwData{S}{S}
+% \SetKwData{top}{S.top}
+% \SetKwData{size}{S.size}
+% \SetKwData{MaxSize}{S.MaxSize}
+
+$top \gets 0$\; $size \gets 0$\Comment*{Starting values for the stack}
+$MaxSize \gets C$\Comment*{Max stack size in number of elements}
 array[MaxSize]\Comment*{The array will store tuples of (index,power)}
-\Def{pop()}{
-    \If{size \textgreater \text{ } 1:}{
-        \If{top == 1:}{
-            top $\gets$ MaxSize;
-            size$--$\;
-            return array[top]\;}
-        \Else{
-            top$--$;
-            size$--$\;
-            return array[top]\;
-        }}}
-\Def{push(boundary$_i$, k)}{ 
-    \nlset{}\Comment{boundary$_i$ is the index of the start of the i-th run}
-    \nlset{}\Comment{k is the power of the i-th run with the (i+1)-th run.}
-    array[top] $\gets$ (boundary$_1$, k)\;
-    top $\gets$ top\%MaxSize + 1\;
-    \If {(size $\neq$ MaxSize)}{
-    size$++$ 
- }}
-\Def{func Top()}{
-    \If {size $\geq$ 1:}{
-        return array[(top == 1) ? MaxSize : (top - 1)]}
-    \Else{
-        return null\Comment*{This will never happen. Top is only called in the algorithm if size > 1.}
+\Def{pop$(S)$}{
+    \If{$S.size = 0$}{
+        \Return underflow
     }
+    $S.size \gets S.size -1$\;
+    $r \gets S.top$\;
+    \If{$S.top = 0$}{
+        $S.top \gets MaxSize-1$;
+    }
+    \Else{
+        $S.top \gets S.top - 1$\;
+    }
+    \Return $S[r]$
+}
+\Def{push$(S, b, p)$}{ 
+    \nlset{}\Comment{$b$ is the boundary of the latest run}
+    \nlset{}\Comment{$p$ is the node power between this and the following run.}
+    $S.top \gets S.top +1$\;
+    \If{S.top > MaxSize}{
+        $S.top \gets 0$
+    }
+    \If{$S.size < MaxSize$}{
+        $S.size \gets S.size+1$
+    }
+    $S[S.top].b \gets b$\;
+    $S[S.top].p \gets p$\;
+ }
+\Def{func TopPower$(S)$}{
+    \Return $S[S.top].p$
 }
 \end{algorithm2e}
 
