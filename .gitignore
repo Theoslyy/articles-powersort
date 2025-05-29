@@ -7,4 +7,6 @@
 *.spl
 *.fls
 *.fdb_latexmk
-
+*.bcf
+*.bbl-SAVE-ERROR
+*.xml
