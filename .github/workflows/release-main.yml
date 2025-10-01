@@ -15,7 +15,7 @@ jobs:
       - name: Download compiled PDF
         uses: actions/download-artifact@v4
         with:
-          name: compiled-pdf
+          name: compiled-pdfs
           path: ./artifact
 
       - name: Create or Update "latest" GitHub Release
