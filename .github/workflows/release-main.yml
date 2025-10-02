@@ -1,14 +1,15 @@
 name: 'Release PDF'
-
+# Controls when the workflow will run
 on:
-  workflow_run:
-    workflows: ["Build LaTex Document"]  # ✅ Must match the name in compile-latex.yml
-    types:
-      - completed
+  push:
+    branches: [ main ]
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  call-latex-compiler:
+    uses: ./.github/workflows/compile-latex.yml
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: call-latex-compiler
     runs-on: ubuntu-latest
     steps:
       - name: Download compiled PDF
@@ -25,6 +26,6 @@ jobs:
           files: ./artifact/*.pdf
           make_latest: true
           body: |
-            Latest PDF files.
+            Latest pdf files.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
