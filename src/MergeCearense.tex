@@ -142,8 +142,8 @@
 % \DeclareUnicodeCharacter{2212}{-} % Estava dando erro nesta linha
 
 % Author info
-\title{\textbf{C-Bounded Powersort's time complexity and correctness analysis}}
-\author{Théo Araújo Magalhães, Victor Almeida Campos} %Existe ordem própria ou é só ordem alfabética?
+\title{\textbf{A study in optimality: MergeCearense}}
+\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} %Existe ordem própria ou é só ordem alfabética?
 % \author{
 % 	Victor Campos
 % 	% \and
@@ -163,406 +163,441 @@
 % Doc: 
 \begin{document}
 \maketitle
-\section{Definitions:}
-\textit{Clarification:} Definitions with a * at the end come from Munro and Wild's papers. This is
-a 'to-do', I will properly cite them later. 
 
-\textbf{Runs:} Contiguous regions of the input that are already in sorted order. 
-Let R$_0$, \dots , R$_{r-1}$ be the runs in the input, L$_i$ denotes the length of R$_i$.*
+\begin{abstract}
+We propose a different way to implement natural mergesorts: as a trie-tree of 
+indexes. The trie-tree interpretation helps us define a different view of 
+a famous sorting algorithm, Powersort, as well as come up with an improved
+version: MergeCearense. We demonstrate (hopefully) that our method is competitive
+and that our trie-tree view helps explain and better visualize optimal merge run strategies.
+\end{abstract}
 
-\textbf{Run-adaptive mergesort:} Any stable run-adaptive mergesort can be described as a merge tree T: 
-an (ordered rooted) tree with leaves R$_0$, \dots, R$_{r-1}$ (appearing in that order from left to right). 
-Each internal node v of T corresponds to the result of merging its children.*
+\section{Introduction}
+Sorry I ain't writing this now. 
+\subsection{Outline}
+tem um nome melhor pra essa seção, a ideia é servir um sumário pra cada seção do artigo. esqueci o nome.
 
-\textbf{Merge costs:} M(v) is the total length of the resulting merge corresponding to the internal node v. 
-The total merge cost of T is then:
-\begin{equation}
-M(T) = \sum_{v \in T}M(v).     
-\end{equation}
+\section{Context}
 
-\textbf{Run boundaries:} Denoted by B$_i$, it is the boundary between the (i − 1)st and ith run (i=1, \dots, r - 1). 
-In binary merge trees, there is a one-to-one correspondence between the B$_i$ and the (inner/non-leaf) merge-tree nodes.*
+\section{The Trie-Trees}
 
-\textbf{Node depth:} Let d$_i$ be the depth of leaf R$_i$ in T, where depth is the number of edges on the path to the root. 
-Every element in run R$_i$ is counted exactly d$_i$ times in $\sum$$_v$M(v), so: 
-\begin{equation}
-        M = \sum^{r-1}_{i=0}d_i \cdot L_i*    
-\end{equation}
+\section{Powersort and optimality}
+nas nossas issues, tem primeiro falar da cartesian tree e depois do powersort.
+mas hmm acho que isso fica meio estranho pq o powersort que chega com 
+a ideia de cartesian trees. na seção anterior ( de trie trees )
+a gente pode mostrar que as trie trees garantem o limite de entropia se 
+os índices forem bons sem falar de cartesiant trees e aí trazer
+as cartesian trees aqui. Essa seção vai ser grande i guess
+\subsection{Trie-Tree Powersort}
 
-\textbf{Node power:} Let $\alpha$$_0$, \dots, $\alpha$$_m$, $\sum$$\alpha$$_j$ = 1 be leaf probabilities. 
-For 1 $\le$ j $\le$ m, let j be the internal node separating the (j − 1)st and jth leaf. The power of (the split at) node j is:
-\begin{equation}
-    P_j = min\{ \ell \in N: \lfloor{\frac{a}{2^{-\ell}}}\rfloor   < \lfloor{\frac{b}{2^{-\ell}}}\rfloor \}, \text{where } a = \sum_{i=0}^{j-1} \alpha_i - \frac{1}{2}\alpha_{j-1}, b = \sum_{i=0}^{j-1} \alpha_i + \frac{1}{2}\alpha_j.
-\end{equation}
+\section{Mergesort Cearense}
 
-(Pj is the index of the first bit where the (binary) fractional parts of a and b differ.)
+\section{Running-Time study}
 
-\textbf{Powersort:} The intuition behind Powersort is to imagine a complete binary tree T$_v$ sitting on top of 
-the array, where each element A[i] of the input corresponds to a leaf of T$_v$ .T$_v$ corresponds to the merge tree of 
-a non-adaptive two-way Mergesort (starting with individual elements). Now each run boundary B$_j$ also corresponds to an (inner) node w of 
-this (virtual) k-ary tree TV , namely the lowest common ancestor of the two leafs adjacent to B$_j$.
-*[ We need to re-explain this part better so that we can talk about the concept of a “Powersort merge tree” or something of the sorts. 
-Helps with the proof of our main proposition]  
+\section{Conclusion and future work}
 
-\textbf{Forgetful K-Stack:} A forgetful stack is a stack that forgets its k-th element if it already has k elements
-in it and a new one is added. 
+\section{Implementations}
+% OLD ARTICLE 
+% \section{Definitions:}
+% \textit{Clarification:} Definitions with a * at the end come from Munro and Wild's papers. This is
+% a 'to-do', I will properly cite them later. 
 
-\textbf{C-Bounded Powersort:} The Powersort algorithm using a Forgetful C-Stack instead of the traditional stack with 
-size logn + 1. 
+% \textbf{Runs:} Contiguous regions of the input that are already in sorted order. 
+% Let R$_0$, \dots , R$_{r-1}$ be the runs in the input, L$_i$ denotes the length of R$_i$.*
 
-\textbf{Processing a subtree of height h:} Let T be a merge tree, T’ one of its subtrees of size h and v the root of T’. 
-Processing T’ is executing all the merges necessary to fill node v, given that it has length M(v). 
+% \textbf{Run-adaptive mergesort:} Any stable run-adaptive mergesort can be described as a merge tree T: 
+% an (ordered rooted) tree with leaves R$_0$, \dots, R$_{r-1}$ (appearing in that order from left to right). 
+% Each internal node v of T corresponds to the result of merging its children.*
 
-\section{Proofs:} 
+% \textbf{Merge costs:} M(v) is the total length of the resulting merge corresponding to the internal node v. 
+% The total merge cost of T is then:
+% \begin{equation}
+% M(T) = \sum_{v \in T}M(v).     
+% \end{equation}
 
-\textbf{Proposition:} Let T be a Powersort merge tree of height H. One pass of the C-Bounded Powersort algorithm is 
-enough to process all subtrees of T with height of C-1.
+% \textbf{Run boundaries:} Denoted by B$_i$, it is the boundary between the ($i - 1$)st and ith run (i=1, \dots, $r - 1$). 
+% In binary merge trees, there is a one-to-one correspondence between the B$_i$ and the (inner/non-leaf) merge-tree nodes.*
 
-\textit{Proof by induction:}  
+% \textbf{Node depth:} Let d$_i$ be the depth of leaf R$_i$ in T, where depth is the number of edges on the path to the root. 
+% Every element in run R$_i$ is counted exactly d$_i$ times in $\sum$$_v$M(v), so: 
+% \begin{equation}
+%         M = \sum^{r-1}_{i=0}d_i \cdot L_i*    
+% \end{equation}
 
-\textbf{Base case - T of height 2:}
+% \textbf{Node power:} Let $\alpha$$_0$, \dots, $\alpha$$_m$, $\sum$$\alpha$$_j$ = 1 be leaf probabilities. 
+% For 1 $\le$ j $\le$ m, let j be the internal node separating the ($j - 1$)st and jth leaf. The power of (the split at) node j is:
+% \begin{equation}
+%     P_j = min\{ \ell \in N: \lfloor{\frac{a}{2^{-\ell}}}\rfloor   < \lfloor{\frac{b}{2^{-\ell}}}\rfloor \}, \text{where } a = \sum_{i=0}^{j-1} \alpha_i - \frac{1}{2}\alpha_{j-1}, b = \sum_{i=0}^{j-1} \alpha_i + \frac{1}{2}\alpha_j.
+% \end{equation}
 
-Let v be the root of T and v$_1$ and v$_2$ its two children. Therefore, T has two sub-trees, T’ and T’’, both of of height one. 
-For the left subtree T', v$_1$ is the root and it has only two leaf children: the runs R$_1$ and R$_2$. 
-Given that h = 1, a Forgetful 2-Stack will work with 2-Bounded Powersort as follows: 
+% (Pj is the index of the first bit where the (binary) fractional parts of a and b differ.)
 
-R$_1$  will be found and added to the stack, then, given that there is nothing to compare R$_1$  with, 
-the algorithm will search for the adjacent run, R$_2$. After finding it, the algorithm will calculate the power 
-between R$_1$ and R$_2$, which is equal to the height of v$_1$. Given that we only have one power calculated, 
-this will lead to no merges and R$_2$ will be added to our stack. Afterwards, the algorithm will proceed to the
-right T'' subtree, which is rooted in v$_2$. The algorithm will find R$_3$ and, then, calculate the power 
-between R$_2$ and R$_3$. This will result in the height of v, which is smaller than that of v$_1$, 
-our previously calculated power, leading to the merge of runs R$_1$ and R$_2$ into run R$_{12}$. 
+% \textbf{Powersort:} The intuition behind Powersort is to imagine a complete binary tree T$_v$ sitting on top of 
+% the array, where each element A[i] of the input corresponds to a leaf of T$_v$ .T$_v$ corresponds to the merge tree of 
+% a non-adaptive two-way Mergesort (starting with individual elements). Now each run boundary B$_j$ also corresponds to an (inner) node w of 
+% this (virtual) k-ary tree TV , namely the lowest common ancestor of the two leafs adjacent to B$_j$.
+% *[ We need to re-explain this part better so that we can talk about the concept of a “Powersort merge tree” or something of the sorts. 
+% Helps with the proof of our main proposition]  
 
-After this, our Forgetful 2-Stack will contain R$_{12}$ and R$_3$. Then, the algorithm will find run R$_4$. 
-Calculating the power between R$_3$ and R$_4$ leads to height v$_2$, 
-which is bigger than that of v, our previously calculated power, meaning the algorithm will not merge any 
-runs and will add R$_4$  to the Forgetful 2-Stack. This will cause the stack to “forget” about R$_{12}$, 
-meaning it will only contain R$_3$ and R$_4$. 
-Once we find R$_4$, we will have reached the end of the array. 
+% \textbf{Forgetful K-Stack:} A forgetful stack is a stack that forgets its k-th element if it already has k elements
+% in it and a new one is added. 
 
-Following the logic of the algorithm, once the scan reaches the end of the array everything that 
-still is in the Forgetful-Stack will be merged, thus, in this situation, a merge between R$_3$ and R$_4$ will happen,
-leading to the processing of both subtrees T’ and T’’. This concludes our base case. 
+% \textbf{C-Bounded Powersort:} The Powersort algorithm using a Forgetful C-Stack instead of the traditional stack with 
+% size logn + 1. 
 
-\textbf{Hypothesis:}
-Suppose the proposition holds true for all subtrees of height h $\leq$ k in a powersort merge tree.
+% \textbf{Processing a subtree of height h:} Let T be a merge tree, T’ one of its subtrees of size h and v the root of T’. 
+% Processing T’ is executing all the merges necessary to fill node v, given that it has length M(v). 
 
-\textbf{Inductive Step:} Let T be a Powersort merge tree of height H. We will prove that a (k+2)-Bounded Powersort 
-processes all of T's subtrees that have height of h = k+1. Let T' be one of those subtrees and v its root. 
-We will analyze the sub-trees T$_\ell$ and T$_r$, each rooted in the left and right children of v, v$_\ell$ 
-being the left child and v$_r$ the right child. The height of the T$_\ell$ is, at most, k, therefore, 
-we can apply our induction hypothesis and process T$_\ell$, thus, v$_\ell$ will contain run R$_\ell$, 
-which is the result of the merge of all runs in T$_\ell$. The processing of this sub-tree will happen once the 
-most-left run of T$_r$ is analyzed by the algorithm.\footnote{Once the power between the most-right run of T$_\ell$ 
-with most-left run of T$_r$ is calculated, it will result in the height of v, 
-which is smaller than the height of v$_\ell$, meaning the algorithm will merge everything left in our Forgetful k+2-Stack, 
-for all powers calculated between runs in T$_\ell$ is greater than v$_\ell$} 
-By the end of the processing of T$_\ell$, our Forgetful (k+2)-Stack will contain R$_\ell$ and
-the most-left run of T$_r$. Given that, by hypothesis, the processing of T$_r$ requires one pass of
-a (k+1)-Bounded Powersort
-\footnote{Remember that T$_\ell$ and T$_r$ have, at max, height of k}
-\footnote{Requiring a (k+1)-Bounded Powersort means the processing needs k+1 free spaces in the Forgetful C-Stack,
-not a specific tuning of the algorithm.}, and that our Forgetful (k+2)-Stack has
-exactly k spaces left, with one of them already being occupied by one run of T$_r$, 
-the algorithm will be able to process T$_r$. Similarly to what happened during the processing of T$_\ell$, 
-the calculation of the power between the right-most run of T$_r$ (which is also the right-most run of T') 
-and the next run, which is the left-most run of another subtree of T with height k+1, will result 
-in the height of v - 1.
-\footnote{This is due to the fact that both runs are in adjacent subtrees: v is the left child of a node v$_p$ and 
-there is a node v' which is the right child of the same v$_p$, the first common ancestor between v and 
-v' is v$_p$, therefore, the first common ancestor between runs in each subtree (the subtree rooted in v and 
-the subtree rooted in v') is v$_p$}. Given that all the powers calculated between runs in T' are greater than v-1, 
-the algorithm will merge all the remaining runs in our Forgetful (k+2) stack, leading to the processing of T$_r$ but 
-also to the processing of T', given that R$_\ell$ will still be on the stack alongside all runs from T$_r$. 
-Therefore, if the (k+2)-Bounded Powersort was able to process a generic T' subtree of T with height k+1, it is fair 
-to assume that it will be able to further process all the remaining subtrees of same height by following the same 
-logic as the one described for T'.
-\qed
+% \section{Proofs:} 
 
-\newpage
-\textbf{Proposition:} It takes C-Bounded Powersort at most $\bigO(n \cdot \log{n})$ element scans to order an array of size n. 
-\begin{proof}
-Each pass through the array scans element i, with 0 $\leq$ i $\leq$ n, at least once. Given that the algorithm will 
-do $\frac{\log{n}}{c-1}$ passes\footnote{The height of a Powersort merge tree T is $\log n$ and the C-Bounded Powersort
-algorithm starts by processing subtrees of T that have height less than or equal to c-1. 
-This results in a smaller tree T' of height $\log n$ - (c-1). A second pass will, once again, 
-process the subtrees of T' that have height less than or equal to c-1, resulting in a smaller tree T''. 
-Therefore, if k is the amount of trees created by this process until the last tree is of height less than or equal to c-1, 
-meaning it will only require one last pass of the algorithm to be processed, k$\cdot$(c-1) $\leq$ $\log n$}, i will be read
-at least $\frac{\log{n}}{c-1}$ times. Once the entire array is ordered, i will also have been read at least twice 
-for each merge it was present in, i.e, 2$\cdot$d$_i$, with d$_i$ being equal to the height of T. Therefore,
-the total number of scans is:
-\begin{equation}
-Scans \leq \sum^{n}_{i=0}2\cdot \log{n} + n \cdot \frac{\log{n}}{c-1}
-\end{equation}
-\begin{equation}
-Scans \leq n\log{n}\cdot(2 + \frac{1}{c-1})
-\end{equation}
-\begin{equation}
-Scans \leq \bigO(n \cdot \log{n})
-\end{equation}
-\end{proof} 
-\newpage
+% \textbf{Proposition:} Let T be a Powersort merge tree of height H. One pass of the C-Bounded Powersort algorithm is 
+% enough to process all subtrees of T with height of C-1.
 
-\section{Pseudocodes:}
-\noindent\textbf{TO-DOs:} \newline
-\noindent 1. Os comentários para cada algoritmo precisam estar de acordo com as definições usadas
-no primeiro esboço do artigo (powersort.tex) e precisam ser revisados para fazerem
-sentido, alguns ainda estão bem abstratos e/ou não descrevem corretamente os algoritmos. \newline
-\noindent 2. Tanto para esse pdf quanto para o anterior, ou seja, para o artigo como um todo, o nome do professor Victor se enquadra como autor? Imagino que sim.
-Essa pergunta é meio boba. \newline
-\noindent 3. Código para a estrutura de dados que iremos usar. \newline
-\noindent 4. Reestruturar o vai e volta. \newline
-\noindent\textbf{Planejamento da estrutura:} Guardaremos o início da primeira run, seu fim e seu power com a run anterior (se houver), além disso,
-cada elemento seguinte será: o fim da run e o power da run com a anterior. 
-run e não teremos um elemento sentinela. O inicio de uma run baseia-se no fim da anterior + 1. Assim que incluimos um elemento
-que estoura o tamanho da pilha, temos que esquecer o primeiro elemento e ajustar
-o novo primeiro elemento para também guardar o seu início.
-(cada pop ou insert decrementa ou aumenta o tamanho) 
+% \textit{Proof by induction:}  
 
-\noindent Como vamos fazer scans da esquerda para a direita e da direita para a esquerda, precisamos 
-alternar entre somar um no fim de uma run para achar o começo da próxima e diminuir um. $\gets$ pensar nisso
+% \textbf{Base case - T of height 2:}
 
-\noindent \textbf{Comentário do professor:} ``{Só um detalhe de notação, usa aqui (A, s$_2$, n). A[s$_2$] é o valor e não o índice.}''
+% Let v be the root of T and v$_1$ and v$_2$ its two children. Therefore, T has two sub-trees, T’ and T’’, both of of height one. 
+% For the left subtree T', v$_1$ is the root and it has only two leaf children: the runs R$_1$ and R$_2$. 
+% Given that h = 1, a Forgetful 2-Stack will work with 2-Bounded Powersort as follows: 
 
-\noindent \textbf{Resposta:} Fiz desse jeito porque é a forma que eles escreveram no artigo, mas achei bem estranho também, depois vou mudar.
+% R$_1$  will be found and added to the stack, then, given that there is nothing to compare R$_1$  with, 
+% the algorithm will search for the adjacent run, R$_2$. After finding it, the algorithm will calculate the power 
+% between R$_1$ and R$_2$, which is equal to the height of v$_1$. Given that we only have one power calculated, 
+% this will lead to no merges and R$_2$ will be added to our stack. Afterwards, the algorithm will proceed to the
+% right T'' subtree, which is rooted in v$_2$. The algorithm will find R$_3$ and, then, calculate the power 
+% between R$_2$ and R$_3$. This will result in the height of v, which is smaller than that of v$_1$, 
+% our previously calculated power, leading to the merge of runs R$_1$ and R$_2$ into run R$_{12}$. 
 
+% After this, our Forgetful 2-Stack will contain R$_{12}$ and R$_3$. Then, the algorithm will find run R$_4$. 
+% Calculating the power between R$_3$ and R$_4$ leads to height v$_2$, 
+% which is bigger than that of v, our previously calculated power, meaning the algorithm will not merge any 
+% runs and will add R$_4$  to the Forgetful 2-Stack. This will cause the stack to “forget” about R$_{12}$, 
+% meaning it will only contain R$_3$ and R$_4$. 
+% Once we find R$_4$, we will have reached the end of the array. 
 
+% Following the logic of the algorithm, once the scan reaches the end of the array everything that 
+% still is in the Forgetful-Stack will be merged, thus, in this situation, a merge between R$_3$ and R$_4$ will happen,
+% leading to the processing of both subtrees T’ and T’’. This concludes our base case. 
 
-\noindent \textbf{Introduction:} We are very smart and we know things, this is the complaints we have for things
-that weren't done by us and how we would have made them better. 
-\newpage
-\subsection{Powersort Versions:}
-\subsubsection{\textbf{Standard Powersort}}
-\textbf{Commentary on Wild and Munro's version:} 
-A single pass algorithm that sorts the entire array. 
-\begin{algorithm}
-\caption{Powersort(A[1...n]) by Wild and Munro:}
-\begin{algorithmic}[1]
-\State $X :=$ stack of runs \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
-\State $P :=$ stack of powers \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
-\State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
-\While{$e_1 < n$}
-    \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$ \Comment{A[$s_2..e_2$] next run}
-    \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{$P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}
-    \While {P.top() $>$ p} \Comment{previous merge deeper in tree than current}
-        \State P.pop() \Comment{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-    \EndWhile \State X.push(A[s1, e1]); P.push(p)
-    \State $s_1 := s_2; e_1 := e_2$
-\EndWhile 
-\State \textbf{end while} \Comment{Now A[$s_1..s_1$] is the rightmost run}
-\While{¬X.empty()}
-    \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-\EndWhile 
-\end{algorithmic}
-\end{algorithm}
-\newpage
-\subsubsection{\textbf{\textbf{First variation of C-Bounded Powersort (only goes right)}}}
-\textbf{Commentary on our first version:} 
-This algorithm performs multiple passes on the array, processing all subtrees
-of height C-1 with each pass. We remind the reader of how Powersort works:
-It is implicitly a complete binary tree of size $\log{n}$. Therefore, the max amount of passes
-needed to sort the array is:
-\begin{equation}
-    \text{N° of scans} \leq {\frac{\log{n}}{{C-1}}}
-\end{equation}
-\begin{algorithm}
-\caption{C-Bounded-Powersort 1(A[1...n], C):}\label{alg:powermy1}
-\begin{algorithmic}[1]
-\State $X :=$ C-bounded stack of runs \Comment{capacity C}
-\State $P :=$ C-bounded stack of powers \Comment{capacity C}
-\State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
-\While{$e_1 < n$} \Comment{{\small This while can be tweaked to use max amount of passes}}
-    \While{$e_1 < n$} \Comment{A single pass goes until the end of the array}
-        \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$
-        \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{{\small Using our node power algorithm}}
-        \While {P.top() $>$ p} \Comment{We follow the same merge policy}
-            \State P.pop()
-            \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
-        \EndWhile \State X.push(A[s1, e1]); P.push(p)
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile 
-    \State \textbf{end while}
-    \While{¬X.empty()}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-    \EndWhile 
-    \State \Comment{{\small We're using a limited stack, so we need to check for another pass}}
-    \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$ \Comment{{\small If $e_1$ = end, the array is sorted}}
-\EndWhile 
-\State \textbf{end while}
-\end{algorithmic}
-\end{algorithm}
-\newpage
-\noindent\textbf{After first modifications:}
-\subsubsection{\textbf{\textbf{Second variation of C-Bounded Powersort (goes left and right!)}}}
-\textbf{Commentary on our second version:} This works rather similarly to our first version.
-The main difference is the fact that, once we reach the end of the array, instead of restarting
-our scan from the beginning, we scan, starting from the end, to the left, until we reach the beginning of the array,
-and, thus, we repeat the scan-right process.
-This is slightly better than the first version, given that it takes advantage of 
-runs still being in cache instead of restarting from the beginning.
+% \textbf{Hypothesis:}
+% Suppose the proposition holds true for all subtrees of height h $\leq$ k in a powersort merge tree.
 
-\noindent\textbf{Comentário sobre X.size \textgreater 1:} Ao invés de termos uma stack X e P, teremos somente uma Stack guardando power e runs. 
-Assim, caso mantenhamos uma run dentro da stack após o final de um scan, ela não estará com o 'power' correto quando
-o próximo scan iniciar. Isso significa que teríamos que dar um pop nessa pilha e tratá-la como vazia. Podemos fazer um s1 $\gets$ top,
-visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai ser sempre a run resultante de todos os merges finais (será?)
-%para o código quebrar páginas, não podemos usar o algorithm, logo, fiz um template de header
+% \textbf{Inductive Step:} Let T be a Powersort merge tree of height H. We will prove that a (k+2)-Bounded Powersort 
+% processes all of T's subtrees that have height of h = k+1. Let T' be one of those subtrees and v its root. 
+% We will analyze the sub-trees T$_\ell$ and T$_r$, each rooted in the left and right children of v, v$_\ell$ 
+% being the left child and v$_r$ the right child. The height of the T$_\ell$ is, at most, k, therefore, 
+% we can apply our induction hypothesis and process T$_\ell$, thus, v$_\ell$ will contain run R$_\ell$, 
+% which is the result of the merge of all runs in T$_\ell$. The processing of this sub-tree will happen once the 
+% most-left run of T$_r$ is analyzed by the algorithm.\footnote{Once the power between the most-right run of T$_\ell$ 
+% with most-left run of T$_r$ is calculated, it will result in the height of v, 
+% which is smaller than the height of v$_\ell$, meaning the algorithm will merge everything left in our Forgetful k+2-Stack, 
+% for all powers calculated between runs in T$_\ell$ is greater than v$_\ell$} 
+% By the end of the processing of T$_\ell$, our Forgetful (k+2)-Stack will contain R$_\ell$ and
+% the most-left run of T$_r$. Given that, by hypothesis, the processing of T$_r$ requires one pass of
+% a (k+1)-Bounded Powersort
+% \footnote{Remember that T$_\ell$ and T$_r$ have, at max, height of k}
+% \footnote{Requiring a (k+1)-Bounded Powersort means the processing needs k+1 free spaces in the Forgetful C-Stack,
+% not a specific tuning of the algorithm.}, and that our Forgetful (k+2)-Stack has
+% exactly k spaces left, with one of them already being occupied by one run of T$_r$, 
+% the algorithm will be able to process T$_r$. Similarly to what happened during the processing of T$_\ell$, 
+% the calculation of the power between the right-most run of T$_r$ (which is also the right-most run of T') 
+% and the next run, which is the left-most run of another subtree of T with height k+1, will result 
+% in the height of v - 1.
+% \footnote{This is due to the fact that both runs are in adjacent subtrees: v is the left child of a node v$_p$ and 
+% there is a node v' which is the right child of the same v$_p$, the first common ancestor between v and 
+% v' is v$_p$, therefore, the first common ancestor between runs in each subtree (the subtree rooted in v and 
+% the subtree rooted in v') is v$_p$}. Given that all the powers calculated between runs in T' are greater than v-1, 
+% the algorithm will merge all the remaining runs in our Forgetful (k+2) stack, leading to the processing of T$_r$ but 
+% also to the processing of T', given that R$_\ell$ will still be on the stack alongside all runs from T$_r$. 
+% Therefore, if the (k+2)-Bounded Powersort was able to process a generic T' subtree of T with height k+1, it is fair 
+% to assume that it will be able to further process all the remaining subtrees of same height by following the same 
+% logic as the one described for T'.
+% \qed
 
-\noindent\rule{\linewidth}{0.8pt}\par % linha preta do topo para fazer um header
-\vspace{-0.3em} % espaçamento 
-\noindent\textbf{Algorithm 3} C-Bounded-Powersort 1(A[1...n], C):\label{alg:powermy2temp}
+% \newpage
+% \textbf{Proposition:} It takes C-Bounded Powersort at most $\bigO(n \cdot \log{n})$ element scans to order an array of size n. 
+% \begin{proof}
+% Each pass through the array scans element i, with 0 $\leq$ i $\leq$ n, at least once. Given that the algorithm will 
+% do $\frac{\log{n}}{c-1}$ passes\footnote{The height of a Powersort merge tree T is $\log n$ and the C-Bounded Powersort
+% algorithm starts by processing subtrees of T that have height less than or equal to c-1. 
+% This results in a smaller tree T' of height $\log n$ - (c-1). A second pass will, once again, 
+% process the subtrees of T' that have height less than or equal to c-1, resulting in a smaller tree T''. 
+% Therefore, if k is the amount of trees created by this process until the last tree is of height less than or equal to c-1, 
+% meaning it will only require one last pass of the algorithm to be processed, k$\cdot$(c-1) $\leq$ $\log n$}, i will be read
+% at least $\frac{\log{n}}{c-1}$ times. Once the entire array is ordered, i will also have been read at least twice 
+% for each merge it was present in, i.e, 2$\cdot$d$_i$, with d$_i$ being equal to the height of T. Therefore,
+% the total number of scans is:
+% \begin{equation}
+% Scans \leq \sum^{n}_{i=0}2\cdot \log{n} + n \cdot \frac{\log{n}}{c-1}
+% \end{equation}
+% \begin{equation}
+% Scans \leq n\log{n}\cdot(2 + \frac{1}{c-1})
+% \end{equation}
+% \begin{equation}
+% Scans \leq \bigO(n \cdot \log{n})
+% \end{equation}
+% \end{proof} 
+% \newpage
 
-\vspace{-0.6em} % espaçamento
-\noindent\rule{\linewidth}{0.5pt}\par % linha preta de baixo para fechar o header
-\vspace{-0.5em} % espaçamento
-\begin{algorithmic}[1]
-\State $X :=$ C-bounded stack of runs and powers
-\State $s_1 := 1; e_1 = ExtendRunRight(1, n)$
-\While{$true$}
-    \If{$e_1 == n$}
-    \State break
-    \EndIf
-    \While{$e_1 < n$} 
-        \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(s_2, n)$ 
-        \State $p := NodePower(s1, e1, s2, e2, n)$
-        \While {X.size \textgreater \text{ }1 and X.top().power $>$ p}
-            \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
-            \State X.pop()
-        \EndWhile \State X.push(s1, p);
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile
-    \State \textbf{end while} 
-    \While{$X.size > 1$}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-    \EndWhile
-    \State $s_1 := n; e_1 = ExtendRunLeft(A[n], 1)$ \Comment{{\scriptsize Now, we're scanning from right to left!}}
-    \If{$e_1 == 1$}
-        \State break \Comment{{\scriptsize If we could extend until the beginning, our run is the entire array.}}
-    \EndIf
-    \While{$e_1 > 1$} \Comment{We're scanning from n down to 1}
-        \State $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$ 
-        \State $p := NodePower(s1, e1, s2, e2, n)$
-        \While {X.size \textgreater \text{ }1 and X.top() $>$ p}
-            \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
-            \State X.pop()
-        \EndWhile \State X.push(s1, p); 
-        \State $s_1 := s_2; e_1 := e_2$
-    \EndWhile 
-    \State \textbf{end while}
-    \While{$X.size > 1$}
-        \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
-    \EndWhile
-    \State $s_1 := 1; e_1 = ExtendRunRight(1, n)$ \Comment{{\small Now, we're scanning from left to right!}}
-\EndWhile
-\end{algorithmic}
-\vspace{-1em}
-\noindent\rule{\linewidth}{0.5pt}\par 
+% \section{Pseudocodes:}
+% \noindent\textbf{TO-DOs:} \newline
+% \noindent 1. Os comentários para cada algoritmo precisam estar de acordo com as definições usadas
+% no primeiro esboço do artigo (powersort.tex) e precisam ser revisados para fazerem
+% sentido, alguns ainda estão bem abstratos e/ou não descrevem corretamente os algoritmos. \newline
+% \noindent 2. Tanto para esse pdf quanto para o anterior, ou seja, para o artigo como um todo, o nome do professor Victor se enquadra como autor? Imagino que sim.
+% Essa pergunta é meio boba. \newline
+% \noindent 3. Código para a estrutura de dados que iremos usar. \newline
+% \noindent 4. Reestruturar o vai e volta. \newline
+% \noindent\textbf{Planejamento da estrutura:} Guardaremos o início da primeira run, seu fim e seu power com a run anterior (se houver), além disso,
+% cada elemento seguinte será: o fim da run e o power da run com a anterior. 
+% run e não teremos um elemento sentinela. O inicio de uma run baseia-se no fim da anterior + 1. Assim que incluimos um elemento
+% que estoura o tamanho da pilha, temos que esquecer o primeiro elemento e ajustar
+% o novo primeiro elemento para também guardar o seu início.
+% (cada pop ou insert decrementa ou aumenta o tamanho) 
 
-\subsection{NodePower versions:}
-\subsubsection{Standard Nodepower:}
-\textbf{Commentary on Wild and Munro's Node Power:} This is so silly and expensive! 
+% \noindent Como vamos fazer scans da esquerda para a direita e da direita para a esquerda, precisamos 
+% alternar entre somar um no fim de uma run para achar o começo da próxima e diminuir um. $\gets$ pensar nisso
 
-\noindent\rule{\linewidth}{0.8pt}\par
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 4} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower1}
+% \noindent \textbf{Comentário do professor:} ``{Só um detalhe de notação, usa aqui (A, s$_2$, n). A[s$_2$] é o valor e não o índice.}''
 
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State $n_1 := e_1 - s_1 + 1;$ \text{ } $n_2 := e_2 - s_2 + 1;$ \text{ } $\ell := 0$
-\State $a := (s_1 + n_1/2 - 1)/n;$ \text{ } $b := (s_2 + n_2/2 - 1)/n$
-\While{$\lfloor a \cdot 2^\ell \rfloor == \lfloor b \cdot 2^\ell \rfloor$ \textbf{do} $\ell := \ell + 1$ \textbf{end while}}
-\EndWhile   
-\State \textbf{return ($\ell$)}
-\end{algorithmic}
-\vspace{-1em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-
-\subsubsection{Our Nodepower:}
-\textbf{Commentary on our Node Power:} Ours is cool and epic.
-(TO-DO: explanation of why it works)
-
-\noindent\rule{\linewidth}{0.8pt}\par 
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 5} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower2}
-
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State xor $:= s_1$ \textbf{\^{}} $s_2$
-\State first\_{}bit := \_{\_{}}builtin\_{}clz(xor)
-\State $\ell :=$ first\_{}b
-\State \textbf{return ($\ell$)}
-\end{algorithmic}
-\vspace{-1em}
-\noindent\rule{\linewidth}{0.5pt}\par
-\newpage
-\subsection{The data structure:}
-\textbf{Introduction:} Wild and Munro's paper shows no specific code for their stack data structure,
-this is probably due to the fact that they simply use a standard stack of height $\log n$.
-Thus, we will have no 'counterpart' algorithm to analyze. Our algorithm implements a modified version of a stack which
-we call "C-Bounded Stack"/"Forgetful Stack".
-
-\subsubsection{C-Bounded Stack:}
-\noindent\textbf{Commentary on our data structure:} 
-When creating this data structure, we had to think of two particularities:
-
-\noindent \textbf{1}. This is a stack of limited size.
-
-\noindent \textbf{2}. This is a stack that has to consider scans going right and a scans going left.
+% \noindent \textbf{Resposta:} Fiz desse jeito porque é a forma que eles escreveram no artigo, mas achei bem estranho também, depois vou mudar.
 
 
-\noindent In order to deal with the limited size, which is the 'forgetful' aspect of the data structure,
-we simply use circularity: we keep the index of where the next new element will be inserted in the case of a push and
-increment it. If we reach the end of the array, we assign the free space to be the first element and overwrite it in case of a push.
-As the stack fills, we also increment a variable for 'size', which corresponds to the amount of elements in the stack. 
-Thus, we keep two variables, one for 'top' and one for 'size'. Other than that, each element in the stack consists
-of a run boundary and the power of this run with its predecessor.
 
-\noindent\textbf{Run boundaries:} When the algorithm is scanning right, the boundary it keeps is the start of the run found. 
-When the algorithm is scanning left, the boundary it keeps is the end of the run found.
+% \noindent \textbf{Introduction:} We are very smart and we know things, this is the complaints we have for things
+% that weren't done by us and how we would have made them better. 
+% \newpage
+% \subsection{Powersort Versions:}
+% \subsubsection{\textbf{Standard Powersort}}
+% \textbf{Commentary on Wild and Munro's version:} 
+% A single pass algorithm that sorts the entire array. 
+% \begin{algorithm}
+% \caption{Powersort(A[1...n]) by Wild and Munro:}
+% \begin{algorithmic}[1]
+% \State $X :=$ stack of runs \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
+% \State $P :=$ stack of powers \Comment{capacity $\lfloor{lgn(n)}\rfloor + 1$}
+% \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
+% \While{$e_1 < n$}
+%     \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$ \Comment{A[$s_2..e_2$] next run}
+%     \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{$P_j$ for node j between A[$s_1..e_1$] and A[$s_2..e_2$]}
+%     \While {P.top() $>$ p} \Comment{previous merge deeper in tree than current}
+%         \State P.pop() \Comment{$\rightarrow$ merge and replace run A[$s_1..e_1$] by result}
+%         \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
+%     \EndWhile \State X.push(A[s1, e1]); P.push(p)
+%     \State $s_1 := s_2; e_1 := e_2$
+% \EndWhile 
+% \State \textbf{end while} \Comment{Now A[$s_1..s_1$] is the rightmost run}
+% \While{¬X.empty()}
+%     \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
+% \EndWhile 
+% \end{algorithmic}
+% \end{algorithm}
+% \newpage
+% \subsubsection{\textbf{\textbf{First variation of C-Bounded Powersort (only goes right)}}}
+% \textbf{Commentary on our first version:} 
+% This algorithm performs multiple passes on the array, processing all subtrees
+% of height C-1 with each pass. We remind the reader of how Powersort works:
+% It is implicitly a complete binary tree of size $\log{n}$. Therefore, the max amount of passes
+% needed to sort the array is:
+% \begin{equation}
+%     \text{N° of scans} \leq {\frac{\log{n}}{{C-1}}}
+% \end{equation}
+% \begin{algorithm}
+% \caption{C-Bounded-Powersort 1(A[1...n], C):}\label{alg:powermy1}
+% \begin{algorithmic}[1]
+% \State $X :=$ C-bounded stack of runs \Comment{capacity C}
+% \State $P :=$ C-bounded stack of powers \Comment{capacity C}
+% \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$
+% \While{$e_1 < n$} \Comment{{\small This while can be tweaked to use max amount of passes}}
+%     \While{$e_1 < n$} \Comment{A single pass goes until the end of the array}
+%         \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(A[s_2], n)$
+%         \State $p := NodePower(s1, e1, s2, e2, n)$ \Comment{{\small Using our node power algorithm}}
+%         \While {P.top() $>$ p} \Comment{We follow the same merge policy}
+%             \State P.pop()
+%             \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$])
+%         \EndWhile \State X.push(A[s1, e1]); P.push(p)
+%         \State $s_1 := s_2; e_1 := e_2$
+%     \EndWhile 
+%     \State \textbf{end while}
+%     \While{¬X.empty()}
+%         \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
+%     \EndWhile 
+%     \State \Comment{{\small We're using a limited stack, so we need to check for another pass}}
+%     \State $s_1 := 1; e_1 = ExtendRunRight(A[1], n)$ \Comment{{\small If $e_1$ = end, the array is sorted}}
+% \EndWhile 
+% \State \textbf{end while}
+% \end{algorithmic}
+% \end{algorithm}
+% \newpage
+% \noindent\textbf{After first modifications:}
+% \subsubsection{\textbf{\textbf{Second variation of C-Bounded Powersort (goes left and right!)}}}
+% \textbf{Commentary on our second version:} This works rather similarly to our first version.
+% The main difference is the fact that, once we reach the end of the array, instead of restarting
+% our scan from the beginning, we scan, starting from the end, to the left, until we reach the beginning of the array,
+% and, thus, we repeat the scan-right process.
+% This is slightly better than the first version, given that it takes advantage of 
+% runs still being in cache instead of restarting from the beginning.
 
-\noindent\rule{\linewidth}{0.8pt}\par
-\vspace{-0.3em} 
-\noindent\textbf{Algorithm 6} C-Bounded Stack(initial run $s_1$, size C):\label{alg:stack}
+% \noindent\textbf{Comentário sobre X.size \textgreater 1:} Ao invés de termos uma stack X e P, teremos somente uma Stack guardando power e runs. 
+% Assim, caso mantenhamos uma run dentro da stack após o final de um scan, ela não estará com o 'power' correto quando
+% o próximo scan iniciar. Isso significa que teríamos que dar um pop nessa pilha e tratá-la como vazia. Podemos fazer um s1 $\gets$ top,
+% visto que a run a ser achada por e$_1$ := ExtendRunSide depois de um scan vai ser sempre a run resultante de todos os merges finais (será?)
+% %para o código quebrar páginas, não podemos usar o algorithm, logo, fiz um template de header
 
-\vspace{-0.6em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
-\vspace{-0.5em} 
-\begin{algorithmic}[1]
-\State top := 1
-\State size := 0
-\State MaxSize := C
-\State array[MaxSize]
-\State \textbf{func Pop()}\{
-\If{size \textgreater \text{ } 1:}
-    \If{top == 1:}
-    \State top $\gets$ MaxSize
-    \Else
-    \State top$--$ 
-    \EndIf
-    \State C$--$ \}
-\EndIf
-\State \textbf{func Push(\textnormal{run boundary$_i$, power k})}\{
-\State array[top] $\gets$ (boundary$_1$, k)
-\State top $\gets$ top\%MaxHeight + 1
-\If (C $\neq$ MaxHeight:)
-\State C$++$ 
-\EndIf \}
-\State \textbf{func Top()}\{
-\If {C $\geq$ 1:}
-\State return array[(top == 1) ? MaxHeight : (top - 1)] \}
-\Else 
-\State return null
-\EndIf
-\end{algorithmic}
-\vspace{-1em} 
-\noindent\rule{\linewidth}{0.5pt}\par 
+% \noindent\rule{\linewidth}{0.8pt}\par % linha preta do topo para fazer um header
+% \vspace{-0.3em} % espaçamento 
+% \noindent\textbf{Algorithm 3} C-Bounded-Powersort 1(A[1...n], C):\label{alg:powermy2temp}
 
-\printbibliography	
+% \vspace{-0.6em} % espaçamento
+% \noindent\rule{\linewidth}{0.5pt}\par % linha preta de baixo para fechar o header
+% \vspace{-0.5em} % espaçamento
+% \begin{algorithmic}[1]
+% \State $X :=$ C-bounded stack of runs and powers
+% \State $s_1 := 1; e_1 = ExtendRunRight(1, n)$
+% \While{$true$}
+%     \If{$e_1 == n$}
+%     \State break
+%     \EndIf
+%     \While{$e_1 < n$} 
+%         \State $s_2 := e_1 + 1; e_2 := ExtendRunRight(s_2, n)$ 
+%         \State $p := NodePower(s1, e1, s2, e2, n)$
+%         \While {X.size \textgreater \text{ }1 and X.top().power $>$ p}
+%             \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
+%             \State X.pop()
+%         \EndWhile \State X.push(s1, p);
+%         \State $s_1 := s_2; e_1 := e_2$
+%     \EndWhile
+%     \State \textbf{end while} 
+%     \While{$X.size > 1$}
+%         \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
+%     \EndWhile
+%     \State $s_1 := n; e_1 = ExtendRunLeft(A[n], 1)$ \Comment{{\scriptsize Now, we're scanning from right to left!}}
+%     \If{$e_1 == 1$}
+%         \State break \Comment{{\scriptsize If we could extend until the beginning, our run is the entire array.}}
+%     \EndIf
+%     \While{$e_1 > 1$} \Comment{We're scanning from n down to 1}
+%         \State $s_2 := e_1 - 1; e_2 := ExtendRunLeft(s_2, 1)$ 
+%         \State $p := NodePower(s1, e1, s2, e2, n)$
+%         \While {X.size \textgreater \text{ }1 and X.top() $>$ p}
+%             \State ($s_1, e_1$) := Merge(X.top().boundary, A[$s_1..e_1$])
+%             \State X.pop()
+%         \EndWhile \State X.push(s1, p); 
+%         \State $s_1 := s_2; e_1 := e_2$
+%     \EndWhile 
+%     \State \textbf{end while}
+%     \While{$X.size > 1$}
+%         \State ($s_1, e_1$) := Merge(X.pop(), A[$s_1..e_1$]) 
+%     \EndWhile
+%     \State $s_1 := 1; e_1 = ExtendRunRight(1, n)$ \Comment{{\small Now, we're scanning from left to right!}}
+% \EndWhile
+% \end{algorithmic}
+% \vspace{-1em}
+% \noindent\rule{\linewidth}{0.5pt}\par 
+
+% \subsection{NodePower versions:}
+% \subsubsection{Standard Nodepower:}
+% \textbf{Commentary on Wild and Munro's Node Power:} This is so silly and expensive! 
+
+% \noindent\rule{\linewidth}{0.8pt}\par
+% \vspace{-0.3em} 
+% \noindent\textbf{Algorithm 4} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower1}
+
+% \vspace{-0.6em} 
+% \noindent\rule{\linewidth}{0.5pt}\par 
+% \vspace{-0.5em} 
+% \begin{algorithmic}[1]
+% \State $n_1 := e_1 - s_1 + 1;$ \text{ } $n_2 := e_2 - s_2 + 1;$ \text{ } $\ell := 0$
+% \State $a := (s_1 + n_1/2 - 1)/n;$ \text{ } $b := (s_2 + n_2/2 - 1)/n$
+% \While{$\lfloor a \cdot 2^\ell \rfloor == \lfloor b \cdot 2^\ell \rfloor$ \textbf{do} $\ell := \ell + 1$ \textbf{end while}}
+% \EndWhile   
+% \State \textbf{return ($\ell$)}
+% \end{algorithmic}
+% \vspace{-1em} 
+% \noindent\rule{\linewidth}{0.5pt}\par 
+
+% \subsubsection{Our Nodepower:}
+% \textbf{Commentary on our Node Power:} Ours is cool and epic.
+% (TO-DO: explanation of why it works)
+
+% \noindent\rule{\linewidth}{0.8pt}\par 
+% \vspace{-0.3em} 
+% \noindent\textbf{Algorithm 5} NodePower($s_1,e_1,s_2,e_2,n$):\label{alg:nodepower2}
+
+% \vspace{-0.6em} 
+% \noindent\rule{\linewidth}{0.5pt}\par 
+% \vspace{-0.5em} 
+% \begin{algorithmic}[1]
+% \State xor $:= s_1$ \textbf{\^{}} $s_2$
+% \State first\_{}bit := \_{\_{}}builtin\_{}clz(xor)
+% \State $\ell :=$ first\_{}b
+% \State \textbf{return ($\ell$)}
+% \end{algorithmic}
+% \vspace{-1em}
+% \noindent\rule{\linewidth}{0.5pt}\par
+% \newpage
+% \subsection{The data structure:}
+% \textbf{Introduction:} Wild and Munro's paper shows no specific code for their stack data structure,
+% this is probably due to the fact that they simply use a standard stack of height $\log n$.
+% Thus, we will have no 'counterpart' algorithm to analyze. Our algorithm implements a modified version of a stack which
+% we call "C-Bounded Stack"/"Forgetful Stack".
+
+% \subsubsection{C-Bounded Stack:}
+% \noindent\textbf{Commentary on our data structure:} 
+% When creating this data structure, we had to think of two particularities:
+
+% \noindent \textbf{1}. This is a stack of limited size.
+
+% \noindent \textbf{2}. This is a stack that has to consider scans going right and a scans going left.
+
+
+% \noindent In order to deal with the limited size, which is the 'forgetful' aspect of the data structure,
+% we simply use circularity: we keep the index of where the next new element will be inserted in the case of a push and
+% increment it. If we reach the end of the array, we assign the free space to be the first element and overwrite it in case of a push.
+% As the stack fills, we also increment a variable for 'size', which corresponds to the amount of elements in the stack. 
+% Thus, we keep two variables, one for 'top' and one for 'size'. Other than that, each element in the stack consists
+% of a run boundary and the power of this run with its predecessor.
+
+% \noindent\textbf{Run boundaries:} When the algorithm is scanning right, the boundary it keeps is the start of the run found. 
+% When the algorithm is scanning left, the boundary it keeps is the end of the run found.
+
+% \noindent\rule{\linewidth}{0.8pt}\par
+% \vspace{-0.3em} 
+% \noindent\textbf{Algorithm 6} C-Bounded Stack(initial run $s_1$, size C):\label{alg:stack}
+
+% \vspace{-0.6em} 
+% \noindent\rule{\linewidth}{0.5pt}\par 
+% \vspace{-0.5em} 
+% \begin{algorithmic}[1]
+% \State top := 1
+% \State size := 0
+% \State MaxSize := C
+% \State array[MaxSize]
+% \State \textbf{func Pop()}\{
+% \If{size \textgreater \text{ } 1:}
+%     \If{top == 1:}
+%     \State top $\gets$ MaxSize
+%     \Else
+%     \State top$--$ 
+%     \EndIf
+%     \State C$--$ \}
+% \EndIf
+% \State \textbf{func Push(\textnormal{run boundary$_i$, power k})}\{
+% \State array[top] $\gets$ (boundary$_1$, k)
+% \State top $\gets$ top\%MaxHeight + 1
+% \If (C $\neq$ MaxHeight:)
+% \State C$++$ 
+% \EndIf \}
+% \State \textbf{func Top()}\{
+% \If {C $\geq$ 1:}
+% \State return array[(top == 1) ? MaxHeight : (top - 1)] \}
+% \Else 
+% \State return null
+% \EndIf
+% \end{algorithmic}
+% \vspace{-1em} 
+% \noindent\rule{\linewidth}{0.5pt}\par 
+
+% \printbibliography	
 
 \end{document}
