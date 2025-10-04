@@ -38,7 +38,23 @@
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usetikzlibrary{shapes.multipart}
 
+\tikzset{block/.style={
+        font=\sffamily,
+        draw=black,
+        thin,
+        fill=pink!50,
+        rectangle split,
+        rectangle split horizontal,
+        rectangle split parts=#1,
+        outer sep=0pt},
+        %
+        gblock/.style={
+            block,
+            rectangle split parts=#1,
+            fill=green!30}
+        }
 % Allow for Case environment to reset
 \usepackage{chngcntr}
 
@@ -143,18 +159,7 @@
 
 % Author info
 \title{\textbf{A study in optimality: MergeCearense}}
-\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} %Existe ordem própria ou é só ordem alfabética?
-% \author{
-% 	Victor Campos
-% 	% \and
-% 	% Raul Lopes
-% 	% \and
-% 	% Walner Mendonça
-% 	% \and
-% 	% Rodrigo Nogueira
-% 	% \and
-% 	% Ignasi Sau
-% }
+\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} 
 
 \date{
 	\today
@@ -168,7 +173,7 @@
 We propose a different way to implement natural mergesorts: as a trie-tree of 
 indexes. The trie-tree interpretation helps us define a different view of 
 a famous sorting algorithm, Powersort, as well as come up with an improved
-version: MergeCearense. We demonstrate (hopefully) that our method is competitive
+version: MergeCearense. We demonstrate \footnote{(Hopefully)} that our method is competitive
 and that our trie-tree view helps explain and better visualize optimal merge run strategies.
 \end{abstract}
 
@@ -176,10 +181,113 @@ and that our trie-tree view helps explain and better visualize optimal merge run
 Sorry I ain't writing this now. 
 \subsection{Outline}
 tem um nome melhor pra essa seção, a ideia é servir um sumário pra cada seção do artigo. esqueci o nome.
-
+\newpage
 \section{Context}
+The study of sorting algorithms has become a rather complex and dense endeavor, with
+some papers leaning heavily on previously stablished proofs, definitions and ideas. That is the
+burden of a well stablished area of study that also has a great amount of intersection
+with other problems.\footnote{Searching and Sorting, for example, are intimately tied to each other. [Citation needed]}
+We aim, within this and further sections, to define all of the concepts necessary to understand this paper, as to avoid
+publishing work that requires extensive complementary reading.
+\subsection{Natural Mergesort}
+Mergesort is a well-known sorting algorithm that consists of using divide-and-conquer
+techniques to sort an array.
+\begin{figure}[h]
+\begin{center}
+\def\lvld{1.2}                  % Choose level distance
+\pgfmathsetmacro\shft{-6*\lvld} % Calculate the yshift for the green tree
 
-\section{The Trie-Trees}
+\begin{tikzpicture}[level distance=\lvld cm,
+                  level 1/.style={sibling distance=4cm},
+                  level 2/.style={sibling distance=2cm},
+                  level 3/.style={sibling distance=1cm},
+                  edgedown/.style={edge from parent/.style={draw=red,thick,-latex}},
+                  edgeup/.style={edge from parent/.style={draw=green!50!black,thick,latex-}}
+                  ]
+
+  % GREEN TREE (drawn first to let the middle line filled in pink)
+
+  \node[gblock=7,yshift=\shft cm] (A') {3 \nodepart{two} 9 \nodepart{three} 10 \nodepart{four} 27 \nodepart{five} 39 \nodepart{six}43 \nodepart{seven}82}
+      [grow=up,edgeup]
+      child {node[gblock=3] (B2') {9 \nodepart{two} 10 \nodepart{three} 82}
+          child {node[gblock=1] (C4') {10}
+              child {node[gblock=1] (D7') {10}}
+          }
+          child {node[gblock=2] (C2') {9 \nodepart{two} 82}
+              child {node[gblock=1] (D3') {82}}
+              child {node[gblock=1] (D4') {9}}
+              }
+          }
+      child {node[gblock=4] (B1') {3 \nodepart{two} 27 \nodepart{three} 39 \nodepart{four} 43}
+          child {node[gblock=2] (C3') {3 \nodepart{two} 43}
+              child {node[gblock=1] (D5') {3}}
+              child {node[gblock=1] (D6') {43}}
+          }
+          child {node[gblock=2] (C1') {27 \nodepart{two} 39}
+              child {node[gblock=1] (D1') {27}}
+              child {node[gblock=1] (D2') {39}}
+              }
+      };
+      
+      
+  % PINK TREE
+  
+  \node[block=7] (A) {39 \nodepart{two} 27 \nodepart{three} 43 \nodepart{four} 3 \nodepart{five} 9 \nodepart{six}82 \nodepart{seven}10}
+      [grow=down,edgedown]
+      child {node[block=4] (B1) {39 \nodepart{two} 27 \nodepart{three} 43 \nodepart{four} 3}
+          child {node[block=2] (C1) {39 \nodepart{two} 27}
+              child {node[block=1] (D1) {39}}
+              child {node[block=1] (D2) {27}}
+              }
+          child {node[block=2] (C2) {43 \nodepart{two} 3}
+              child {node[block=1] (D3) {43}}
+              child {node[block=1] (D4) {3}}
+              }
+          }
+      child {node[block=3] (B2) {9 \nodepart{two} 82 \nodepart{three} 10}
+          child {node[block=2] (C3) {9 \nodepart{two} 82}
+              child {node[block=1] (D5) {9}}
+              child {node[block=1] (D6) {82}}
+          }
+          child {node[block=1] (C4) {10}
+              child {node[block=1] (D7) {10}}
+          }
+      };
+\end{tikzpicture}
+\caption{Mergesort tree with 7 elements}
+\end{center}
+\end{figure}
+
+The figure above shows us the functioning of the algorithm: It descends
+until each subarray has size one, merging it with its neighbor. 
+All subsequent subproblems are solved by merging a subarray with its neighbor until the entire
+array is sorted. If you look closely at the MergeSort tree above, though, you can see that the subproblem
+[9,82] is already solved: [9,82] is a sorted array. This is what we call a run.
+
+\definition{} A \textbf{Run} is a contiguous region of the input that is non-decreasing or non-increasing, i.e it already is in sorted order or it can be reversed to be in sorted order. For
+mergesort, it is a subproblem that is already solved. 
+
+
+After defining runs, it is natural to think about engineering a MergeSort algorithm 
+that takes them into consideration. This is what we call a natural merge sort.
+
+\definition{} A \textbf{Natural Mergesort} is a sorting algorithm that takes advantage of
+existing runs in the input to perform merges. 
+
+
+to-do:
+Adaptability, the advantage of looking into runs (i.e adapting to entropy), 
+defining entropy, talking about other sorting algorithms. 
+The idea here is to start as if doing a historical recap of sorting,
+but jumping directly to the study of natural mergesorts.
+Here, I want to talk about Timsort, Huffman, the algorithm that uses Huffman trees
+just to give a general idea of what has been done already. Then,
+we transition to powersort and talk about optimality and the idea
+of a merge tree to define merge strategies/policies. 
+While talking about timsort we introduce the idea of a merge policy.
+Here, we talk about merge costs. I don't want to make 
+this section just a throwing of information, though, which is why
+im trying to give it some 'flow'. Infodump = bad. 
 
 \section{Powersort and optimality}
 nas nossas issues, tem primeiro falar da cartesian tree e depois do powersort.
