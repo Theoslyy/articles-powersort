@@ -39,12 +39,13 @@
 \usepackage{tikz}
 \usepackage{subcaption}
 \usetikzlibrary{shapes.multipart}
+\usetikzlibrary{trees}
 
 \tikzset{block/.style={
         font=\sffamily,
         draw=black,
         thin,
-        fill=pink!50,
+        fill=magenta!50,
         rectangle split,
         rectangle split horizontal,
         rectangle split parts=#1,
@@ -53,7 +54,7 @@
         gblock/.style={
             block,
             rectangle split parts=#1,
-            fill=green!30}
+            fill=blue!30}
         }
 % Allow for Case environment to reset
 \usepackage{chngcntr}
@@ -158,7 +159,7 @@
 % \DeclareUnicodeCharacter{2212}{-} % Estava dando erro nesta linha
 
 % Author info
-\title{\textbf{A study in optimality: MergeCearense}}
+\title{\textbf{A study in the optimality of adaptable sorting: MergeCearense}}
 \author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} 
 
 \date{
@@ -178,9 +179,9 @@ and that our trie-tree view helps explain and better visualize optimal merge run
 \end{abstract}
 
 \section{Introduction}
-Sorry I ain't writing this now. 
+\textbf{Theo:} Sorry I ain't writing this now. 
 \subsection{Outline}
-tem um nome melhor pra essa seção, a ideia é servir um sumário pra cada seção do artigo. esqueci o nome.
+\textbf{Theo:} tem um nome melhor pra essa seção, a ideia é servir um sumário pra cada seção do artigo. esqueci o nome.
 \newpage
 \section{Context}
 The study of sorting algorithms has become a rather complex and dense endeavor, with
@@ -201,8 +202,8 @@ techniques to sort an array.
                   level 1/.style={sibling distance=4cm},
                   level 2/.style={sibling distance=2cm},
                   level 3/.style={sibling distance=1cm},
-                  edgedown/.style={edge from parent/.style={draw=red,thick,-latex}},
-                  edgeup/.style={edge from parent/.style={draw=green!50!black,thick,latex-}}
+                  edgedown/.style={edge from parent/.style={draw=magenta!50!black,thick,-latex}},
+                  edgeup/.style={edge from parent/.style={draw=blue!50!black,thick,latex-}}
                   ]
 
   % GREEN TREE (drawn first to let the middle line filled in pink)
@@ -275,7 +276,7 @@ that takes them into consideration. This is what we call a natural merge sort.
 existing runs in the input to perform merges. 
 
 
-to-do:
+\textbf{Theo:} to-do:
 Adaptability, the advantage of looking into runs (i.e adapting to entropy), 
 defining entropy, talking about other sorting algorithms. 
 The idea here is to start as if doing a historical recap of sorting,
@@ -289,8 +290,77 @@ Here, we talk about merge costs. I don't want to make
 this section just a throwing of information, though, which is why
 im trying to give it some 'flow'. Infodump = bad. 
 
+\subsection{Trie Trees}
+Due to the nature of natural mergesorts, this article will mention and define a variety of tree-like datastructures. Previously,
+we have shown the structure of a MergeSort Tree for the standard MergeSort algorithm, now, we will define the
+datastructure that will serve as the basis for our natural mergesort algorithm. 
+\definition{} A \textbf{Trie} is an M-ary tree, whose nodes are M-place vectors with components corresponding to digits or characters.
+\footnote{referenced from the art of computer programming sorting and searching page 492.}
+
+For the purposes of this article, we will be dealing with 2-ary trees whose nodes are labelled as either
+'0' or '1'. 
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[
+  treenode/.style={circle,draw,minimum size=8mm,inner sep=0pt,thick,font=\small},
+  edgelabel/.style={draw=none,fill=none,inner sep=8pt,font=\small},
+  level 1/.style={sibling distance=30mm, level distance=15mm},
+  level 2/.style={sibling distance= 15mm, level distance=15mm},
+  edge from parent/.style={draw,thick}
+]
+
+% Root
+\node[treenode]{}
+  % left subtree
+  child { node[treenode]{0} 
+    child{  node[treenode]{00} 
+            edge from parent node[edgelabel,near start,left] {0}
+    }
+    child{  node[treenode]{01} 
+            edge from parent node[edgelabel,near start,right] {1}
+    }
+    edge from parent node[edgelabel,near start,left] {0}
+  }
+  % right subtree
+  child { node[treenode]{1}
+    child{  node[treenode]{10} 
+            edge from parent node[edgelabel,near start,left] {0}
+    }
+    child{  node[treenode]{11} 
+            edge from parent node[edgelabel,near start,right] {1}
+    }
+    edge from parent node[edgelabel,near start,right] {1}
+  };
+
+\end{tikzpicture}
+\caption{2-ary Trie Tree}
+\end{center}
+\end{figure}
+
+In the figure above, one might notice that we have labelled not just the nodes, but
+also the edges of our tree. It is also possible to observe that '0' means 'descending leftways'
+and '1' means 'descending leftways'. Tries have applications in the realm of string-searching (specifically web searching),
+data-mining, internet routing, among others. 
+
+\textbf{Theo:} THE FOLLOWING EXPLANATION IS A TO-DO!!!! NOT FINISHED!!! THIS SEGMENT WILL MOST LIKELY NOT BE ENTIRELY FOUND HERE.
+
+For the purpose of our work, we apply Trie Trees to find the lowest common ancestor
+of two adjacent runs by giving each run indexes that will fit in our desired Triee Tree. 
+Our Trie Tree goes through a 'compression' step that resolves 'useless' levels, raising all
+runs to their first divergence node. This is the tree that we will use for our MergeSort algorithm
+and our merge policy will be the same as that of PowerSort, given that we have the same guarantee of
+Indexes. 
+
+\textbf{Theo:} BELOW SEGMENT IS A PLANNING LIST 
+
+I think if we previously define Huffman Trees and how people use those trees for merges
+we can segway into talking the indexes for trie-trees and compressed trees. 
+Its better to work on the previous context than to continue talking about trie trees.
+Trie trees are slightly novel, i think, for most people, so difining other things to compare them with
+seems better than just jumping right into talking about them. 
+
 \section{Powersort and optimality}
-nas nossas issues, tem primeiro falar da cartesian tree e depois do powersort.
+\textbf{Theo:} nas nossas issues, tem primeiro falar da cartesian tree e depois do powersort.
 mas hmm acho que isso fica meio estranho pq o powersort que chega com 
 a ideia de cartesian trees. na seção anterior ( de trie trees )
 a gente pode mostrar que as trie trees garantem o limite de entropia se 
