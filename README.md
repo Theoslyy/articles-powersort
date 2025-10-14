@@ -4,6 +4,10 @@
 
 [Here](https://github.com/Theoslyy/articles-powersort/releases/download/latest/MergeCearense.pdf) is the current version of the paper.
 
+# Links
+
+[Truques de bits](https://graphics.stanford.edu/~seander/bithacks.html): página com truques de bits que podem ser úteis
+
 # Git Workflow Guide
 
 This document explains the typical Git workflow used in collaborative software projects, including how to:
