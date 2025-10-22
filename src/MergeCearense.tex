@@ -160,7 +160,7 @@
 
 % Author info
 \title{\textbf{A study in the optimality of adaptable sorting: MergeCearense}}
-\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} 
+\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael de Paiva Lima Filho} 
 
 \date{
 	\today
@@ -297,8 +297,8 @@ datastructure that will serve as the basis for our natural mergesort algorithm.
 \definition{} A \textbf{Trie} is an M-ary tree, whose nodes are M-place vectors with components corresponding to digits or characters.
 \footnote{referenced from the art of computer programming sorting and searching page 492.}
 
-For the purposes of this article, we will be dealing with 2-ary trees whose nodes are labelled as either
-'0' or '1'. 
+% For the purposes of this article, we will be dealing with 2-ary trees whose nodes are labelled as either
+% '0' or '1'. 
 \begin{figure}[h]
 \begin{center}
 \begin{tikzpicture}[
@@ -340,16 +340,40 @@ For the purposes of this article, we will be dealing with 2-ary trees whose node
 In the figure above, one might notice that we have labelled not just the nodes, but
 also the edges of our tree. It is also possible to observe that '0' means 'descending leftways'
 and '1' means 'descending leftways'. Tries have applications in the realm of string-searching (specifically web searching),
-data-mining, internet routing, among others. 
+data-mining, internet routing, among others.
+For the purposes of this article, we will be dealing with binary Tries whose nodes are labelled as either
+'0' or '1', that is, every node of the tree will have its path from the root defined by a bitstring the size of its depth.
+In order to improve readability, from now on we will refer to this structure only by Trie.
 
-\textbf{Theo:} THE FOLLOWING EXPLANATION IS A TO-DO!!!! NOT FINISHED!!! THIS SEGMENT WILL MOST LIKELY NOT BE ENTIRELY FOUND HERE.
+% definir associacao dos indices I_i (com figura)
 
-For the purpose of our work, we apply Trie Trees to find the lowest common ancestor
-of two adjacent runs by giving each run indexes that will fit in our desired Triee Tree. 
-Our Trie Tree goes through a 'compression' step that resolves 'useless' levels, raising all
-runs to their first divergence node. This is the tree that we will use for our MergeSort algorithm
-and our merge policy will be the same as that of PowerSort, given that we have the same guarantee of
-Indexes. 
+We can take advatage of certain properties of this structure to yield us operations that
+will prove to be useful in our algorithm.
+
+\definition{} In a rooted tree T, the \textbf{Lowest Common Ancestor} of two nodes x and y is
+the deepest node that is an ancestor of both x and y.
+% \footnote{referenced from Algorithms on Strings, Trees, and Sequences
+% by Dan Gusfield, \textsection 8}
+
+To find the Lowest Common Ancestor (LCA) of two nodes in a Trie, we can simply compare the
+bitstrings and find the first position where they differ, which can be calculated in constant time by using bitwise operations XOR
+and CLZ (Count Leading Zeroes). For example: node x = 0001 and node y = 0011 first diverge at the third level of the
+tree. In this way, given a complete \footnote{A complete Trie is a Trie where all the levels are fully filled except for the leaves}
+Trie and a sequence of leaf indexes I$_0$, I$_1$, ... I$_n$, if we take the lowest common ancestor of any two indexes I$_i$ and I$_{j}$, we get the root of
+the smallest subtree that contains both I$_i$ and I$_{j}$. In this way, we can calculate the LCA of every pair of adjacent indexes I$_i$, I$_{i+1}$ to
+get a series of subtrees that can be used to compress our Trie by raising all leaves to their first divergence node.
+
+\textbf{Rafael:} ainda vou colocar figuras de exemplo aqui (assim que eu aprender). Essa seção ainda não acabou.
+
+
+% \textbf{Theo:} THE FOLLOWING EXPLANATION IS A TO-DO!!!! NOT FINISHED!!! THIS SEGMENT WILL MOST LIKELY NOT BE ENTIRELY FOUND HERE.
+
+% For the purpose of our work, we apply Trie Trees to find the lowest common ancestor
+% of two adjacent runs by giving each run indexes that will fit in our desired Triee Tree. 
+% Our Trie Tree goes through a 'compression' step that resolves 'useless' levels, raising all
+% runs to their first divergence node. This is the tree that we will use for our MergeSort algorithm
+% and our merge policy will be the same as that of PowerSort, given that we have the same guarantee of
+% Indexes.
 
 \textbf{Theo:} BELOW SEGMENT IS A PLANNING LIST 
 
@@ -366,6 +390,9 @@ a ideia de cartesian trees. na seção anterior ( de trie trees )
 a gente pode mostrar que as trie trees garantem o limite de entropia se 
 os índices forem bons sem falar de cartesiant trees e aí trazer
 as cartesian trees aqui. Essa seção vai ser grande i guess
+\textbf{Rafael:} acho que vale comentar pelo menos da construção sequencial da Trie comprimida
+antes de seguir pro powersort, deixei essa parte pra ser a seção em que a gente faz a equivalência 
+com o problema das runs.
 \subsection{Trie-Tree Powersort}
 
 \section{Mergesort Cearense}
