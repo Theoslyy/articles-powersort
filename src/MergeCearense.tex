@@ -53,7 +53,7 @@
         %
         gblock/.style={
             block,
-            rectangle split parts=#1,
+            rectangle split parts=#1,   
             fill=blue!30}
         }
 % Allow for Case environment to reset
@@ -160,7 +160,7 @@
 
 % Author info
 \title{\textbf{A study in the optimality of adaptable sorting: MergeCearense}}
-\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome} 
+\author{Victor Almeida Campos \and Théo Araújo Magalhães \and Rafael Sobrenome UltimoNome \and Pedro Henrique Sobrenome últimoNome} 
 
 \date{
 	\today
@@ -171,24 +171,64 @@
 \maketitle
 
 \begin{abstract}
-We propose a different way to implement natural mergesorts: as a trie-tree of 
-indexes. The trie-tree interpretation helps us define a different view of 
-a famous sorting algorithm, Powersort, as well as come up with an improved
-version: MergeCearense. We demonstrate \footnote{(Hopefully)} that our method is competitive
-and that our trie-tree view helps explain and better visualize optimal merge run strategies.
+We propose a novel way of visualizing natural mergesort algorithms: as a trie-tree of 
+indexes. The utility of our framework of interpretation will be shown through a reinterpretation of
+a state of the art sorting algorithm: Powersort. We also demonstrate an\footnote{(Hopefully)}
+improved version of Powersort: MergeCearense and show that it is competitive.
 \end{abstract}
 
-\section{Introduction}
-\textbf{Theo:} Sorry I ain't writing this now. 
+\section{Introduction - ESBOÇO}
+There is a variety of different ways to understand and analyze sorting algorithms. Traditionally, the
+study of a sorting algorithm's optimality fell under scrutiny of the number of comparisons an algorithm makes, which 
+resulted in a lower bound for sorting of $\mathcal{O}(N \log N)$ comparisons\footnote{ref here, woof}. 
+This lower bound, though, doesn't mean the study of sorting is over and that we can't  analyze other strategies: the study 
+of external sorting algorithms has resulted in a different sorting lower bound of $\mathcal{O}({N \over B} \log_{M \over B} {N \over B})$ \footnote{ref 2 here, woof!},
+and adaptive algorithms require specific analyzes to determine optimality in regards of which measure an algorithm is 
+trying adapting to. Currently, it is of our opinion that the most interesting results in sorting have come out of 
+the study of natural mergesort algorithms. These algorithms try to adapt to the entropy of runs and are the object of study
+of this article. 
+
+\noindent\textbf{Theo:} o segmento comentado (ver código tex) abaixo era eu tentando pensar em uma forma de falar como
+é legal estudar algoritmos que estão relacionados com a estrutura do problema,
+mas que isso é difícil e se feito de forma ruim pode ser muito ruim e 
+dizer que é mais ou menos isso que está acontecendo com o estudo de algoritmos cache oblivious
+e que, de forma contrária, não é o que está acontecendo com algoritmos de mergesort natural. 
+\newline \noindent \textbf{end of comment}
+
+% To understand how the study of sorting algorithms is progressing is also to understand, somewhat, how science progresses: 
+% classic sorting algorithms (i.e Quicksort, Mergesort, Heapsort) have simple worst-case proofs, whilst Timsort,
+% on the other hand, was implemented in Python two decades before a theoretical bound for it was proven. The classic
+% algorithms do not meddle with the underlying structure of the problem, whilst Timsort was the first good (in practice)
+% attempt of exploiting sorted segments in an array. To meddle with the structure of a problem and use this structure as a way to solve the problem
+% requires, sometimes, more effort than simply just ignoring any underlying structure. Cache oblivious algorithms seem to, sadly, 
+% be 
+
+
 \subsection{Outline}
 \textbf{Theo:} tem um nome melhor pra essa seção, a ideia é servir um sumário pra cada seção do artigo. esqueci o nome.
 \newpage
 \section{Context}
-The study of sorting algorithms has become a rather complex and dense endeavor, with
+\textbf{Theo:} to-do:
+Adaptability, the advantage of looking into runs (i.e adapting to entropy), 
+defining entropy, talking about other sorting algorithms. 
+The idea here is to start as if doing a historical recap of sorting,
+but jumping directly to the study of natural mergesorts.
+Here, I want to talk about Timsort, Huffman, the algorithm that uses Huffman trees
+just to give a general idea of what has been done already. Then,
+we transition to powersort and talk about optimality and the idea
+of a merge tree to define merge strategies/policies. 
+While talking about timsort we introduce the idea of a merge policy.
+Here, we talk about merge costs. I don't want to make 
+this section just a throwing of information, though, which is why
+im trying to give it some 'flow'. Infodump = bad. 
+\newline \noindent \textbf{end of comment}
+
+
+\noindent The study of sorting algorithms has become a rather complex and dense endeavor, with
 some papers leaning heavily on previously stablished proofs, definitions and ideas. That is the
 burden of a well stablished area of study that also has a great amount of intersection
 with other problems.\footnote{Searching and Sorting, for example, are intimately tied to each other. [Citation needed]}
-We aim, within this and further sections, to define all of the concepts necessary to understand this paper, as to avoid
+We aim, within this and further sections, to define all of the concepts necessary to understand this paper in a self contained way, as to avoid
 publishing work that requires extensive complementary reading.
 \subsection{Natural Mergesort}
 Mergesort is a well-known sorting algorithm that consists of using divide-and-conquer
@@ -206,14 +246,15 @@ techniques to sort an array.
                   edgeup/.style={edge from parent/.style={draw=blue!50!black,thick,latex-}}
                   ]
 
-  % GREEN TREE (drawn first to let the middle line filled in pink)
+  %   BLUE TREE (drawn first to let the middle line filled in pink)
 
-  \node[gblock=7,yshift=\shft cm] (A') {3 \nodepart{two} 9 \nodepart{three} 10 \nodepart{four} 27 \nodepart{five} 39 \nodepart{six}43 \nodepart{seven}82}
+  \node[gblock=8,yshift=\shft cm] (A') {3 \nodepart{two} 9 \nodepart{three} 10 \nodepart{four} 27 \nodepart{five} 39 \nodepart{six} 43 \nodepart{seven} 56 \nodepart{eight} 82}
       [grow=up,edgeup]
-      child {node[gblock=3] (B2') {9 \nodepart{two} 10 \nodepart{three} 82}
-          child {node[gblock=1] (C4') {10}
+      child {node[gblock=4] (B2') {9 \nodepart{two} 10 \nodepart{three} 56 \nodepart{four} 82}
+          child {node[gblock=2] (C4') {10 \nodepart{two} 56}
+              child {node[gblock=1] (D8') {56}}
               child {node[gblock=1] (D7') {10}}
-          }
+              }
           child {node[gblock=2] (C2') {9 \nodepart{two} 82}
               child {node[gblock=1] (D3') {82}}
               child {node[gblock=1] (D4') {9}}
@@ -233,7 +274,7 @@ techniques to sort an array.
       
   % PINK TREE
   
-  \node[block=7] (A) {39 \nodepart{two} 27 \nodepart{three} 43 \nodepart{four} 3 \nodepart{five} 9 \nodepart{six}82 \nodepart{seven}10}
+  \node[block=8] (A) {39 \nodepart{two} 27 \nodepart{three} 43 \nodepart{four} 3 \nodepart{five} 9 \nodepart{six}82 \nodepart{seven}10 \nodepart{eight} 56}
       [grow=down,edgedown]
       child {node[block=4] (B1) {39 \nodepart{two} 27 \nodepart{three} 43 \nodepart{four} 3}
           child {node[block=2] (C1) {39 \nodepart{two} 27}
@@ -245,55 +286,68 @@ techniques to sort an array.
               child {node[block=1] (D4) {3}}
               }
           }
-      child {node[block=3] (B2) {9 \nodepart{two} 82 \nodepart{three} 10}
+      child {node[block=4] (B2) {9 \nodepart{two} 82 \nodepart{three} 10 \nodepart{four} 56}
           child {node[block=2] (C3) {9 \nodepart{two} 82}
               child {node[block=1] (D5) {9}}
               child {node[block=1] (D6) {82}}
           }
-          child {node[block=1] (C4) {10}
+          child {node[block=2] (C4) {10 \nodepart{two} 56}
               child {node[block=1] (D7) {10}}
+              child {node[block=1] (D8) {56}}
           }
       };
 \end{tikzpicture}
-\caption{Mergesort tree with 7 elements}
+\caption{Mergesort tree with 8 elements}
 \end{center}
 \end{figure}
 
-The figure above shows us the functioning of the algorithm: It descends
-until each subarray has size one, merging it with its neighbor. 
-All subsequent subproblems are solved by merging a subarray with its neighbor until the entire
-array is sorted. If you look closely at the MergeSort tree above, though, you can see that the subproblem
+\noindent The figure above shows us how the algorithm functions: it divides the array in half and
+recursively descends in each halved part until the resulting split creates subproblems of size one. Once
+it is in a subarray of size one, it merges this array with its neighbor, which is also of size one, starting a chain of merges.
+This chain can be seen in the image right after the last pink blocks of size one: first, the eight individual pink blocks are merged together 
+into subarrays of size 2, then, the now-blue and 2-sized subarrays merge, resulting in two subarrays of size four, which then
+leads to the merge of the two remaining subarrays of size four, creating the final sorted array of size 8.
+In a generic way, the Mergesort algorithm functions by dividing the main array into two subarrays, i.e into two sorting subproblems, solving these subproblems recursively
+and merging the results of both subproblems, resulting into the final ordered array.
+If you look closely at the MergeSort tree above, though, you can see that the subproblem
 [9,82] is already solved: [9,82] is a sorted array. This is what we call a run.
 
+
 \definition{} A \textbf{Run} is a contiguous region of the input that is non-decreasing or non-increasing, i.e it already is in sorted order or it can be reversed to be in sorted order. For
-mergesort, it is a subproblem that is already solved. 
+our Mergesort explanation above, it can be seen a subproblem that is already solved.
 
-
-After defining runs, it is natural to think about engineering a MergeSort algorithm 
+\noindent \newline After defining runs, it is natural to think about engineering a MergeSort algorithm 
 that takes them into consideration. This is what we call a natural merge sort.
 
 \definition{} A \textbf{Natural Mergesort} is a sorting algorithm that takes advantage of
 existing runs in the input to perform merges. 
 
+\noindent \newline But what's the advantage of a Natural Mergesort over traditional Mergesort? The idea here is that
+Natural Mergesort adapts to the structure of the array, thus, instead of recursively descending 
+until a subproblem of size one, resulting in a tree of logarithmic size in relation to the input, Natural Mergesort
+'knows' more about the array, thus, it 'tries' to create a smaller tree. 
 
-\textbf{Theo:} to-do:
-Adaptability, the advantage of looking into runs (i.e adapting to entropy), 
-defining entropy, talking about other sorting algorithms. 
-The idea here is to start as if doing a historical recap of sorting,
-but jumping directly to the study of natural mergesorts.
-Here, I want to talk about Timsort, Huffman, the algorithm that uses Huffman trees
-just to give a general idea of what has been done already. Then,
-we transition to powersort and talk about optimality and the idea
-of a merge tree to define merge strategies/policies. 
-While talking about timsort we introduce the idea of a merge policy.
-Here, we talk about merge costs. I don't want to make 
-this section just a throwing of information, though, which is why
-im trying to give it some 'flow'. Infodump = bad. 
+\definition{} A \textbf{MergeTree} is a tree that gives us merges, duh. (to-do)
+
+\noindent \newline But how good can the Natural Mergesort tree be? What does it adapt to? 
+
+\definition{} \textbf{Entropy} is a measure of the RUNS present in the ARRAY (to-do definition)
+
+\noindent \newline But how does a tree that adapts to entropy looks like?
+
+\subsection{Merge Trees}
+\textbf{Theo:} After defining Entropy, do we spend some time talking about Huffman
+and other sorting algorithms? Do we jump straight to how powersort does it?
+I think that talking about Huffman and how the huffman tree was used for 
+a mergesort algorithm is interesting. 
+\newline \textbf{end of comment}
+\definition{} \textbf{Huffman Encoding}
+\definition{} \textbf{Binary Search Tree}
 
 \subsection{Trie Trees}
 Due to the nature of natural mergesorts, this article will mention and define a variety of tree-like datastructures. Previously,
 we have shown the structure of a MergeSort Tree for the standard MergeSort algorithm, now, we will define the
-datastructure that will serve as the basis for our natural mergesort algorithm. 
+datastructure that will serve as the basis for the way we visually interpret natural mergesort algorithms. 
 \definition{} A \textbf{Trie} is an M-ary tree, whose nodes are M-place vectors with components corresponding to digits or characters.
 \footnote{referenced from the art of computer programming sorting and searching page 492.}
 
